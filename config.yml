@@ -1,0 +1,16 @@
+Prefix: '&evBungee &8&l» &7'
+Lobbies:
+  - Lobby1
+Messages:
+  PlayerNotFound: '&cWe could not find &e%player%&7 on the network.'
+  StaffChat:
+    Format: '&7(&e&lStaff&7) (&b%server%&7) &c%player% &8» &b%message%'
+    Toggle: 'You have &e%status%&7 staff chat'
+  Report:
+    Confirmation: 'Your report has been received and will be reviewed by staff.'
+    Format: '%prefix%&e%reporter%&7 has reported &e%reported%&7 for &e%reason%&7.'
+    FormatHover: "&7Click to join &e%server%&7."
+    Usage: 'Invalid Usage. Please type &e/report <player> <reason>&7.'
+  Server:
+    Connect: 'Connecting you to &e%server%&7.'
+    NotFound: 'We could not find a server called &e%server%&7.'
