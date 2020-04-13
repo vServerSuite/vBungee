@@ -7,7 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DateUtil {
-    public static long parseDateDiff(String time, boolean future) {
+    public static long parseDateDiff(String time, boolean future) { 
         Pattern timePattern = Pattern.compile("(?:([0-9]+)\\s*y[a-z]*[,\\s]*)?"
                 + "(?:([0-9]+)\\s*mo[a-z]*[,\\s]*)?"
                 + "(?:([0-9]+)\\s*w[a-z]*[,\\s]*)?"
