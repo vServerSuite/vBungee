@@ -2,19 +2,20 @@ package codes.benh.velocitymc.utils;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DateUtil {
-    public static long parseDateDiff(String time, boolean future) { 
-        Pattern timePattern = Pattern.compile("(?:([0-9]+)\\s*y[a-z]*[,\\s]*)?"
-                + "(?:([0-9]+)\\s*mo[a-z]*[,\\s]*)?"
-                + "(?:([0-9]+)\\s*w[a-z]*[,\\s]*)?"
-                + "(?:([0-9]+)\\s*d[a-z]*[,\\s]*)?"
-                + "(?:([0-9]+)\\s*h[a-z]*[,\\s]*)?"
-                + "(?:([0-9]+)\\s*m[a-z]*[,\\s]*)?"
-                + "(?:([0-9]+)\\s*(?:s[a-z]*)?)?", Pattern.CASE_INSENSITIVE);
+    private static Pattern timePattern = Pattern.compile("(?:([0-9]+)\\s*y[a-z]*[,\\s]*)?"
+                    + "(?:([0-9]+)\\s*mo[a-z]*[,\\s]*)?" + "(?:([0-9]+)\\s*w[a-z]*[,\\s]*)?" + "(?:([0-9]+)\\s*d[a-z]*[,\\s]*)?"
+                    + "(?:([0-9]+)\\s*h[a-z]*[,\\s]*)?" + "(?:([0-9]+)\\s*m[a-z]*[,\\s]*)?" + "(?:([0-9]+)\\s*(?:s[a-z]*)?)?",
+            Pattern.CASE_INSENSITIVE);
+
+    public static String removeTimePattern(String input) {
+        return timePattern.matcher(input).replaceFirst("").trim();
+    }
+
+    public static long parseDateDiff(String time, boolean future) throws Exception {
         Matcher m = timePattern.matcher(time);
         int years = 0;
         int months = 0;
@@ -60,13 +61,8 @@ public class DateUtil {
             }
         }
         if (!found) {
-            return -1;
+            throw new Exception("illegalDate");
         }
-
-        if (years > 20) {
-            return -1;
-        }
-
         Calendar c = new GregorianCalendar();
         if (years > 0) {
             c.add(Calendar.YEAR, years * (future ? 1 : -1));
@@ -89,62 +85,12 @@ public class DateUtil {
         if (seconds > 0) {
             c.add(Calendar.SECOND, seconds * (future ? 1 : -1));
         }
-        return c.getTimeInMillis() / 1000L;
-    }
-
-    public static String formatDifference(long time) {
-        if (time == 0) {
-            return "never";
+        Calendar max = new GregorianCalendar();
+        max.add(Calendar.YEAR, 10);
+        if (c.after(max)) {
+            return max.getTimeInMillis();
         }
-
-        long day = TimeUnit.SECONDS.toDays(time);
-        long hours = TimeUnit.SECONDS.toHours(time) - (day * 24);
-        long minutes = TimeUnit.SECONDS.toMinutes(time)
-                - (TimeUnit.SECONDS.toHours(time) * 60);
-        long seconds = TimeUnit.SECONDS.toSeconds(time)
-                - (TimeUnit.SECONDS.toMinutes(time) * 60);
-
-        StringBuilder sb = new StringBuilder();
-
-        if (day > 0) {
-            sb.append(day).append(" ").append(day == 1 ? "day" : "days")
-                    .append(" ");
-        }
-
-        if (hours > 0) {
-            sb.append(hours).append(" ").append(hours == 1 ? "hour" : "hours")
-                    .append(" ");
-        }
-
-        if (minutes > 0) {
-            sb.append(minutes).append(" ")
-                    .append(minutes == 1 ? "minute" : "minutes").append(" ");
-        }
-
-        if (seconds > 0) {
-            sb.append(seconds).append(" ")
-                    .append(seconds == 1 ? "second" : "seconds");
-        }
-
-        String diff = sb.toString();
-
-        return diff.isEmpty() ? "now" : diff;
-    }
-
-    public static String getDifferenceFormat(long timestamp) {
-        return formatDifference(timestamp
-                - (System.currentTimeMillis() / 1000L));
-    }
-
-    public static long getDifference(long timestamp) {
-        return timestamp - (System.currentTimeMillis() / 1000L);
-    }
-
-    public static String formatDateDiff(long date) {
-        Calendar c = new GregorianCalendar();
-        c.setTimeInMillis(date);
-        Calendar now = new GregorianCalendar();
-        return DateUtil.formatDateDiff(now, c);
+        return c.getTimeInMillis();
     }
 
     static int dateDiff(int type, Calendar fromDate, Calendar toDate, boolean future) {
@@ -158,6 +104,13 @@ public class DateUtil {
         diff--;
         fromDate.setTimeInMillis(savedDate);
         return diff;
+    }
+
+    public static String formatDateDiff(long date) {
+        Calendar c = new GregorianCalendar();
+        c.setTimeInMillis(date);
+        Calendar now = new GregorianCalendar();
+        return DateUtil.formatDateDiff(now, c);
     }
 
     public static String formatDateDiff(Calendar fromDate, Calendar toDate) {

@@ -12,7 +12,6 @@ import java.util.concurrent.TimeUnit;
 import codes.benh.velocitymc.commands.BungeeStatsCommand;
 import codes.benh.velocitymc.commands.LobbyCommand;
 import codes.benh.velocitymc.commands.ReportCommand;
-import codes.benh.velocitymc.commands.RestartCommand;
 import codes.benh.velocitymc.commands.StaffChatCommand;
 import codes.benh.velocitymc.listeners.StaffChatListener;
 import codes.benh.velocitymc.runnables.TpsRunnable;
@@ -50,7 +49,6 @@ public class Main extends Plugin {
         pluginManager.registerCommand(this, new BungeeStatsCommand());
         pluginManager.registerCommand(this, new LobbyCommand());
         pluginManager.registerCommand(this, new ReportCommand());
-        pluginManager.registerCommand(this, new RestartCommand());
         pluginManager.registerCommand(this, new StaffChatCommand());
     }
 
