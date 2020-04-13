@@ -10,6 +10,7 @@ public class Permissions {
     public static final String STAFF_CHAT = COMMAND_PREFIX + "staffchat";
     public static final String REPORT = COMMAND_PREFIX + "report";
     public static final String LOBBY = COMMAND_PREFIX + "lobby";
+    public static final String RESTART = COMMAND_PREFIX + "restart";
 
     // Receive Permissions
     public static final String STAFF_CHAT_RECEIVE = COMMAND_PREFIX + "staffchat.receive";

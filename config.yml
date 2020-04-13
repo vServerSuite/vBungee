@@ -1,4 +1,8 @@
 Prefix: '&evBungee &8&l» &7'
+Pterodactyl:
+  BaseApiUrl: 'https://panel.example.com/api/'
+  ApiKey: ''
+  ServerId: ''
 Lobbies:
   - Lobby1
 Messages:
