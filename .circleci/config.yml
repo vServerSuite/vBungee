@@ -1,36 +1,30 @@
-version: 2 # use CircleCI 2.0
-jobs: # a collection of steps
-  build: # runs not using Workflows must have a `build` job as entry point
-    
-    working_directory: ~/vBungee # directory where steps will run
-
-    docker:
-      - image: circleci/openjdk:8-jdk-stretch
-
-    steps:
-
+workflows:
+  version: 2 # use CircleCI 2.0
+  docker:
+    - image: circleci/openjdk:8-jdk-stretch
+  working_directory: ~/vBungee
+  setup-environment:
+    jobs: # a collection of steps
       - checkout
-
       - restore_cache:
           # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
           key: vBungee-{{ checksum "pom.xml" }}
-      
       - run: 
           name: Download Dependencies
           command: mvn dependency:go-offline
-      
       - save_cache:
           paths:
             - ~/.m2
           key: vBungee-{{ checksum "pom.xml" }}
-      
+  build:
+    jobs:
       - run: 
           name: Build Project
           command: mvn install
-      
       - store_artifacts: 
           path: target/vBungee.jar
-          
+  deploy:
+    jobs:
       - run:
           name: Install LFTP
           filters:
@@ -41,7 +35,6 @@ jobs: # a collection of steps
           command: |
             sudo apt-get update;
             sudo apt-get install lftp;
-      
       - run:
           name: Deploy to Bungee
           filters:
