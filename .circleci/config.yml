@@ -18,6 +18,7 @@ jobs:
   build:
     docker:
       - image: circleci/openjdk:8-jdk-stretch
+    working_directory: ~/vBungee # directory where steps will run
     steps: # a collection of steps
       - checkout
       - restore_cache:
@@ -38,6 +39,7 @@ jobs:
   deploy:
     docker:
       - image: debian
+    working_directory: ~/vBungee # directory where steps will run
     steps:
       - run:
           name: Install LFTP
