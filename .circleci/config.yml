@@ -1,6 +1,3 @@
-docker:
-  - image: circleci/openjdk:8-jdk-stretch
-  
 workflows:
   version: 2
   build_deploy:
@@ -17,9 +14,10 @@ workflows:
               ignore: /.*/
           requires:
             - build
-
 jobs:
   setup-environment:
+    docker:
+      - image: circleci/openjdk:8-jdk-stretch
     steps: # a collection of steps
       - checkout
       - restore_cache:
@@ -33,6 +31,8 @@ jobs:
             - ~/.m2
           key: vBungee-{{ checksum "pom.xml" }}
   build:
+    docker:
+      - image: circleci/openjdk:8-jdk-stretch
     steps:
       - run: 
           name: Build Project
@@ -40,6 +40,8 @@ jobs:
       - store_artifacts: 
           path: target/vBungee.jar
   deploy:
+    docker:
+      - image: circleci/openjdk:8-jdk-stretch
     steps:
       - run:
           name: Install LFTP
