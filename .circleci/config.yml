@@ -20,7 +20,7 @@ workflows:
 
 jobs:
   setup-environment:
-    jobs: # a collection of steps
+    steps: # a collection of steps
       - checkout
       - restore_cache:
           # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
@@ -33,14 +33,14 @@ jobs:
             - ~/.m2
           key: vBungee-{{ checksum "pom.xml" }}
   build:
-    jobs:
+    steps:
       - run: 
           name: Build Project
           command: mvn install
       - store_artifacts: 
           path: target/vBungee.jar
   deploy:
-    jobs:
+    steps:
       - run:
           name: Install LFTP
           command: |
