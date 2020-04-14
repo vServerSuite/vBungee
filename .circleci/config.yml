@@ -15,27 +15,36 @@ jobs: # a collection of steps
           # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
           key: vBungee-{{ checksum "pom.xml" }}
       
-      - run: mvn dependency:go-offline
+      - run: 
+          name: Download Dependencies
+          command: mvn dependency:go-offline
       
       - save_cache:
           paths:
             - ~/.m2
           key: vBungee-{{ checksum "pom.xml" }}
       
-      - run: mvn install
+      - run: 
+          name: Build Project
+          command: mvn install
       
       - store_artifacts: 
           path: target/vBungee.jar
           
       - run:
           name: Install LFTP
+          filters:
+            tags:
+              only: /^v.*/
           command: |
             sudo apt-get update;
             sudo apt-get install lftp;
       
       - run:
           name: Deploy to Bungee
+          filters:
+            tags:
+              only: /^v.*/
           command: |
             lftp -c "set sftp:auto-confirm yes ; open -u ${ftp_username},${ftp_password} sftp://${ftp_host} ; put -O plugins/ target/vBungee.jar ; quit"
             curl "https://panel.benh.codes/api/client/servers/d66387f9/command" -H "Authorization: Bearer ${pterodactyl_api_key}" -H "Content-Type: application/json" -H "Accept: Application/vnd.pterodactyl.v1+json" -X POST -d '{ "command": "grestart 5m Network Maintenance" }'
-      
