@@ -34,8 +34,8 @@ jobs:
             branches:
               ignore: /.*/
           command: |
-            apt-get update -y;
-            apt-get install lftp curl -y;
+            sudo apt-get update -y;
+            sudo apt-get install lftp curl -y;
       - run:
           name: Deploy to Bungee
           filters:
