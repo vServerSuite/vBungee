@@ -35,11 +35,12 @@ public class LobbyCommand extends BaseCommand {
             sendMessage(player, messageToSend, true);
         }
         else {
-            if(ProxyServer.getInstance().getServerInfo(args[0]) == null) {
+            if (ProxyServer.getInstance().getServerInfo(args[0]) == null) {
                 String messageToSend = Main.getInstance().getConfig().getString(Messages.SERVER_NOT_FOUND)
                         .replaceAll("%server%", args[0]);
                 sendMessage(player, messageToSend, true);
-            }else {
+            }
+            else {
                 player.connect(Main.getInstance().getProxy().getServerInfo(args[0]));
                 String messageToSend = Main.getInstance().getConfig().getString(Messages.SERVER_CONNECT)
                         .replaceAll("%server%", args[0]);

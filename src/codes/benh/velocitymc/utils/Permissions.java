@@ -15,4 +15,16 @@ public class Permissions {
     public static final String STAFF_CHAT_RECEIVE = COMMAND_PREFIX + "staffchat.receive";
     public static final String REPORT_RECEIVE = COMMAND_PREFIX + "report.receive";
 
+    //Punishments Permissions
+    public static final String KICK = COMMAND_PREFIX + "kick";
+    public static final String KICK_EXEMPT = KICK + ".exempt";
+    public static final String KICK_RECEIVE = KICK + ".receive";
+
+
+    public static final String BAN = COMMAND_PREFIX + "ban";
+    public static final String BAN_EXEMPT = KICK + ".exempt";
+    public static final String BAN_RECEIVE = KICK + ".receive";
+
+    public static final String LOOKUP = COMMAND_PREFIX + "lookup";
+
 }

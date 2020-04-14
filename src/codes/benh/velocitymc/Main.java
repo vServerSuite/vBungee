@@ -13,9 +13,16 @@ import codes.benh.velocitymc.commands.BungeeStatsCommand;
 import codes.benh.velocitymc.commands.LobbyCommand;
 import codes.benh.velocitymc.commands.ReportCommand;
 import codes.benh.velocitymc.commands.StaffChatCommand;
+import codes.benh.velocitymc.commands.punishments.KickCommand;
+import codes.benh.velocitymc.commands.punishments.bans.BanCommand;
+import codes.benh.velocitymc.commands.punishments.core.LookupCommand;
+import codes.benh.velocitymc.helpers.DbHelper;
+import codes.benh.velocitymc.listeners.JoinListener;
 import codes.benh.velocitymc.listeners.StaffChatListener;
 import codes.benh.velocitymc.runnables.TpsRunnable;
 import com.google.common.io.ByteStreams;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
@@ -23,10 +30,13 @@ import net.md_5.bungee.api.scheduler.TaskScheduler;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
 import net.md_5.bungee.config.YamlConfiguration;
+import pro.husk.mysql.MySQL;
 
 public class Main extends Plugin {
 
     private static Main main;
+    private static MySQL mySQL;
+    private static LuckPerms api;
 
     public List<ProxiedPlayer> staffChatToggled = new ArrayList<>();
 
@@ -34,8 +44,17 @@ public class Main extends Plugin {
         return main;
     }
 
+    public static MySQL getMySQL() {
+        return mySQL;
+    }
+
+    public static LuckPerms getLuckPermsAPI() {
+        return api;
+    }
+
     public void onEnable() {
-        this.main = this;
+        main = this;
+        api = LuckPermsProvider.get();
 
         PluginManager pluginManager = getProxy().getPluginManager();
 
@@ -43,17 +62,31 @@ public class Main extends Plugin {
         registerListeners(pluginManager);
         registerSchedulers(getProxy().getScheduler());
         saveDefaultConfig();
+
+        mySQL = new MySQL(
+                getConfig().getString("Database.Host"),
+                getConfig().getString("Database.Port"),
+                getConfig().getString("Database.Database"),
+                getConfig().getString("Database.Username"),
+                getConfig().getString("Database.Password"),
+                getConfig().getString("Database.Params"));
+
+        DbHelper.initialise();
     }
 
     private void registerCommands(PluginManager pluginManager) {
+        pluginManager.registerCommand(this, new BanCommand());
         pluginManager.registerCommand(this, new BungeeStatsCommand());
+        pluginManager.registerCommand(this, new KickCommand());
         pluginManager.registerCommand(this, new LobbyCommand());
+        pluginManager.registerCommand(this, new LookupCommand());
         pluginManager.registerCommand(this, new ReportCommand());
         pluginManager.registerCommand(this, new StaffChatCommand());
     }
 
     private void registerListeners(PluginManager pluginManager) {
         pluginManager.registerListener(this, new StaffChatListener());
+        pluginManager.registerListener(this, new JoinListener());
     }
 
     private void registerSchedulers(TaskScheduler taskScheduler) {

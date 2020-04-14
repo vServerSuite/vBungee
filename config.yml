@@ -1,4 +1,11 @@
 Prefix: '&evBungee &8&l» &7'
+Database:
+  Host: ''
+  Port: '3306'
+  Database: ''
+  Username: ''
+  Password: ''
+  Params: '&useSSL=false'
 Lobbies:
   - Lobby1
 Messages:
@@ -14,3 +21,16 @@ Messages:
   Server:
     Connect: 'Connecting you to &e%server%&7.'
     NotFound: 'We could not find a server called &e%server%&7.'
+  Punishments:
+    Kick:
+      Alert: '&e%player%&7 has been kicked by &e%staff%&7 with the reason &e%reason%&7.'
+      Exempt: '&e%player%&7 is exempt from being kicked.'
+      Message: 'You have been kicked by &e%staff%&7 for &e%reason%&7.'
+      Usage: 'Invalid Usage. Please type &e/kick <player> <reason>&7.'
+    Ban:
+      Alert: '&e%player%&7 has been permanently banned by &e%staff%&7 for &e%reason%&7.'
+      Exempt: '&e%player%&7 is exempt from being banned.'
+      Message: 'You have been permanently banned by &e%staff%&7 for &e%reason%&7.'
+      Usage: 'Invalid Usage. Please type &e/ban <player> <reason>&7.'
+    Lookup:
+      Usage: 'Invalid Usage. Please type &e/lookup <player>'
