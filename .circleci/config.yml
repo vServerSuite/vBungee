@@ -42,10 +42,10 @@ jobs:
       - run:
           name: Install LFTP
           command: |
-            - 'apt-get update -y;'
-            - 'apt-get install lftp curl -y;'
+            apt-get update -y;
+            apt-get install lftp curl -y;
       - run:
           name: Deploy to Bungee
           command: |
-            - 'lftp -c "set sftp:auto-confirm yes ; open -u ${ftp_username},${ftp_password} sftp://${ftp_host} ; put -O plugins/ target/vBungee.jar ; quit"'
-            - 'curl "https://panel.benh.codes/api/client/servers/d66387f9/command" -H "Authorization: Bearer ${pterodactyl_api_key}" -H "Content-Type: application/json" -H "Accept: Application/vnd.pterodactyl.v1+json" -X POST -d \'{ "command": "grestart 5m Network Maintenance" }\''
+            lftp -c "set sftp:auto-confirm yes ; open -u ${ftp_username},${ftp_password} sftp://${ftp_host} ; put -O plugins/ target/vBungee.jar ; quit"
+            curl "https://panel.benh.codes/api/client/servers/d66387f9/command" -H "Authorization: Bearer ${pterodactyl_api_key}" -H "Content-Type: application/json" -H "Accept: Application/vnd.pterodactyl.v1+json" -X POST -d '{ "command": "grestart 5m Network Maintenance" }'
