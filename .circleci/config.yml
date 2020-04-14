@@ -1,8 +1,24 @@
+docker:
+  - image: circleci/openjdk:8-jdk-stretch
+  
 workflows:
-  version: 2 # use CircleCI 2.0
-  docker:
-    - image: circleci/openjdk:8-jdk-stretch
-  working_directory: ~/vBungee
+  version: 2
+  build_deploy:
+    jobs:
+      - setup-environment
+      - build:
+          requires:
+            - setup-environment
+      - deploy:
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
+          requires:
+            - build
+
+jobs:
   setup-environment:
     jobs: # a collection of steps
       - checkout
@@ -27,21 +43,11 @@ workflows:
     jobs:
       - run:
           name: Install LFTP
-          filters:
-            tags:
-              only: /^v.*/
-            branches:
-              ignore: /.*/
           command: |
             sudo apt-get update;
             sudo apt-get install lftp;
       - run:
           name: Deploy to Bungee
-          filters:
-            tags:
-              only: /^v.*/
-            branches:
-              ignore: /.*/
           command: |
             lftp -c "set sftp:auto-confirm yes ; open -u ${ftp_username},${ftp_password} sftp://${ftp_host} ; put -O plugins/ target/vBungee.jar ; quit"
             curl "https://panel.benh.codes/api/client/servers/d66387f9/command" -H "Authorization: Bearer ${pterodactyl_api_key}" -H "Content-Type: application/json" -H "Accept: Application/vnd.pterodactyl.v1+json" -X POST -d '{ "command": "grestart 5m Network Maintenance" }'
