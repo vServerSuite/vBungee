@@ -15,7 +15,7 @@ workflows:
           requires:
             - build
 jobs:
-  setup-environment:
+  build:
     docker:
       - image: circleci/openjdk:8-jdk-stretch
     steps: # a collection of steps
@@ -30,10 +30,6 @@ jobs:
           paths:
             - ~/.m2
           key: vBungee-{{ checksum "pom.xml" }}
-  build:
-    docker:
-      - image: circleci/openjdk:8-jdk-stretch
-    steps:
       - run: 
           name: Build Project
           command: mvn install
@@ -41,7 +37,7 @@ jobs:
           path: target/vBungee.jar
   deploy:
     docker:
-      - image: circleci/openjdk:8-jdk-stretch
+      - image: debian
     steps:
       - run:
           name: Install LFTP
