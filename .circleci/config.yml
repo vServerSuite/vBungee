@@ -2,18 +2,7 @@ workflows:
   version: 2
   build_deploy:
     jobs:
-      - build:
-          filters:
-            tags:
-              only: /.*/
-      - deploy:
-          filters:
-            tags:
-              only: /.*/
-            branches:
-              ignore: /.*/
-          requires:
-            - build
+      - build
 jobs:
   build:
     docker:
@@ -36,18 +25,30 @@ jobs:
           command: mvn install
       - store_artifacts: 
           path: target/vBungee.jar
-  deploy:
-    docker:
-      - image: debian
-    working_directory: ~/vBungee # directory where steps will run
-    steps:
+          
       - run:
           name: Install LFTP
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/
           command: |
             apt-get update -y;
             apt-get install lftp curl -y;
       - run:
           name: Deploy to Bungee
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/
           command: |
             lftp -c "set sftp:auto-confirm yes ; open -u ${ftp_username},${ftp_password} sftp://${ftp_host} ; put -O plugins/ target/vBungee.jar ; quit"
             curl "https://panel.benh.codes/api/client/servers/d66387f9/command" -H "Authorization: Bearer ${pterodactyl_api_key}" -H "Content-Type: application/json" -H "Accept: Application/vnd.pterodactyl.v1+json" -X POST -d '{ "command": "grestart 5m Network Maintenance" }'
+  deploy:
+    docker:
+      - image: debian
+    working_directory: ~/vBungee # directory where steps will run
+    steps:
+      
