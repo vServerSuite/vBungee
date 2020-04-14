@@ -36,6 +36,8 @@ jobs: # a collection of steps
           filters:
             tags:
               only: /^v.*/
+            branches:
+              ignore: /.*/
           command: |
             sudo apt-get update;
             sudo apt-get install lftp;
@@ -45,6 +47,8 @@ jobs: # a collection of steps
           filters:
             tags:
               only: /^v.*/
+            branches:
+              ignore: /.*/
           command: |
             lftp -c "set sftp:auto-confirm yes ; open -u ${ftp_username},${ftp_password} sftp://${ftp_host} ; put -O plugins/ target/vBungee.jar ; quit"
             curl "https://panel.benh.codes/api/client/servers/d66387f9/command" -H "Authorization: Bearer ${pterodactyl_api_key}" -H "Content-Type: application/json" -H "Accept: Application/vnd.pterodactyl.v1+json" -X POST -d '{ "command": "grestart 5m Network Maintenance" }'
