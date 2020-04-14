@@ -2,10 +2,7 @@ workflows:
   version: 2
   build_deploy:
     jobs:
-      - setup-environment
-      - build:
-          requires:
-            - setup-environment
+      - build
       - deploy:
           filters:
             tags:
