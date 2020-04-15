@@ -25,6 +25,6 @@ steps:
 
 - task: PublishPipelineArtifact@1
   inputs:
-    targetPath: '$(Pipeline.Workspace)/target/vBungee.jar'
+    targetPath: '$(Build.SourcesDirectory)/target/vBungee.jar'
     artifact: 'vBungee'
     publishLocation: 'pipeline'
