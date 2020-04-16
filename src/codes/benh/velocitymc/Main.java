@@ -7,8 +7,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import codes.benh.velocitymc.commands.BungeeStatsCommand;
@@ -81,17 +83,17 @@ public class Main extends Plugin {
     private void parseLogDeletion() {
         System.out.println("vSuite > Clearing up /logs/");
         File dirPath = new File("./logs");
-        File[] files = null;
         if (dirPath.isDirectory()) {
-            files = dirPath.listFiles();
-            assert files != null;
-            for (File file : files) {
-                if (file.getName().endsWith(".log.gz") && !file.getName().contains(new SimpleDateFormat("yyyy-MM-dd").format(new Date()))) {
-                    boolean delete = file.delete();
-                    System.out.println("vSuite > Deleted log file " + file.getName() + " (Deleted? " + delete + ")");
-                }
-            }
+            String dateString = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+            String logExtension = ".log.gz";
+            Arrays.stream(Objects.requireNonNull(dirPath.listFiles())).filter(file -> !file.getName().contains(dateString) && file.getName().contains(logExtension)).forEach(this::deleteFile);
         }
+        System.out.println("vSuite > Log Files Cleared");
+    }
+
+    private void deleteFile(File file) {
+        boolean deleted = file.delete();
+        System.out.println("vSuite > Log File Removed (Deleted? " + deleted + ")");
     }
 
     private void registerCommands(PluginManager pluginManager) {
