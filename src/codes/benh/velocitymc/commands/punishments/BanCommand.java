@@ -22,7 +22,7 @@ public class BanCommand extends BaseCommand {
 
     @Override
     public void execute(CommandSender commandSender, String[] args) {
-        if (commandSender.hasPermission(Permissions.BAN) || commandSender.hasPermission(Permissions.TEMP_BAN)) {
+        if (commandSender.hasPermission(Permissions.BAN) || commandSender.hasPermission(Permissions.BAN_TEMPORARY)) {
             if (args.length < 2) {
                 sendMessage(commandSender, Main.getInstance().getConfig().getString(Messages.BAN_INVALID_USAGE), true);
             }
