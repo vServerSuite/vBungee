@@ -9,10 +9,9 @@ import java.util.concurrent.CompletableFuture;
 import codes.benh.velocitymc.Main;
 import codes.benh.velocitymc.models.punishments.Ban;
 import codes.benh.velocitymc.models.punishments.Kick;
+import codes.benh.velocitymc.models.punishments.Mute;
 import net.luckperms.api.cacheddata.CachedPermissionData;
 import net.luckperms.api.context.ContextManager;
-import net.luckperms.api.context.ImmutableContextSet;
-import net.luckperms.api.query.QueryOptions;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.Connection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -26,6 +25,7 @@ public class Player {
     private long _firstLogin = 0;
     private long _lastLogin = 0;
     private List<Ban> _bans = new ArrayList<>();
+    private List<Mute> _mutes = new ArrayList<>();
     private List<Kick> _kicks = new ArrayList<>();
 
     private Player(ProxiedPlayer player) {
@@ -126,6 +126,7 @@ public class Player {
                         while (resultSet.next()) {
                             _firstLogin = resultSet.getLong("player_first_login");
                             _lastLogin = resultSet.getLong("player_last_login");
+                            username = resultSet.getString("player_username");
                         }
                     }
                 });
@@ -146,6 +147,23 @@ public class Player {
                         }
                     }
                 });
+                Main.getMySQL().query("SELECT * FROM Mutes WHERE mute_uuid='" + uuid + "'", resultSet -> {
+                    if (resultSet != null) {
+                        while (resultSet.next()) {
+                            Mute mute = new Mute();
+                            mute.setId(resultSet.getInt("mute_id"));
+                            mute.setPlayer(getUsernameFromUUID(uuid));
+                            mute.setDateStarted(resultSet.getLong("mute_start_date"));
+                            mute.setStaff(getUsernameFromUUID(UUID.fromString(resultSet.getString("mute_staff"))));
+                            mute.setReason(resultSet.getString("mute_reason"));
+                            mute.setTemporary(resultSet.getBoolean("mute_temporary"));
+                            mute.setMuteEndDate(resultSet.getLong("mute_end_date"));
+                            mute.setActive(resultSet.getBoolean("mute_is_active"));
+
+                            _mutes.add(mute);
+                        }
+                    }
+                });
                 Main.getMySQL().query("SELECT * FROM Kicks WHERE kick_uuid='" + uuid + "'", resultSet -> {
                     if (resultSet != null) {
                         while (resultSet.next()) {
@@ -160,7 +178,6 @@ public class Player {
                         }
                     }
                 });
-                username = getUsernameFromUUID(uuid);
             }
         }
         catch (SQLException e) {
@@ -182,6 +199,10 @@ public class Player {
 
     public List<Ban> getBans() {
         return _bans;
+    }
+
+    public List<Mute> getMutes() {
+        return _mutes;
     }
 
     public List<Kick> getKicks() {
@@ -209,9 +230,7 @@ public class Player {
         return Main.getLuckPermsAPI().getUserManager().loadUser(uuid)
                 .thenApplyAsync(user -> {
                     ContextManager contextManager = Main.getLuckPermsAPI().getContextManager();
-                    ImmutableContextSet contextSet = contextManager.getContext(user).orElseGet(contextManager::getStaticContext);
-                    CachedPermissionData permissionData = user.getCachedData().getPermissionData(QueryOptions.contextual(contextSet));
-                    System.out.println(permissionData.checkPermission(permission).asBoolean());
+                    CachedPermissionData permissionData = user.getCachedData().getPermissionData(contextManager.getQueryOptions(user).orElseGet(contextManager::getStaticQueryOptions));
                     return permissionData.checkPermission(permission).asBoolean();
                 });
     }
@@ -243,23 +262,73 @@ public class Player {
 
         try {
             Main.getMySQL().update("INSERT INTO " +
-                    "`Kicks` (`kick_uuid`, `kick_date`, `kick_staff`, `kick_reason`) VALUES ('" + uuid + "', '" + System.currentTimeMillis() + "', '" + staffUuid + "', '" + reason + "')");
+                    "`Kicks` (`kick_uuid`, `kick_date`, `kick_staff`, `kick_reason`) " +
+                    "VALUES ('" + uuid + "', '" + System.currentTimeMillis() + "', '" + staffUuid + "', '" + reason + "')");
         }
         catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public void logBan(CommandSender staffMember, String reason) {
+    public void logBan(CommandSender staffMember, String reason, long expiryDate) {
 
         String staffUuid = (staffMember instanceof ProxiedPlayer) ? ((ProxiedPlayer) staffMember).getUniqueId().toString() : "CONSOLE";
 
         try {
             Main.getMySQL().update("INSERT INTO " +
-                    "`Bans` (`ban_uuid`, `ban_start_date`, `ban_staff`, `ban_reason`) VALUES ('" + uuid + "', '" + System.currentTimeMillis() + "', '" + staffUuid + "', '" + reason + "')");
+                    "`Bans` (`ban_uuid`, `ban_start_date`, `ban_staff`, `ban_reason`, `ban_temporary`, `ban_end_date`) " +
+                    "VALUES ('" + uuid + "', '" + System.currentTimeMillis() + "', '" + staffUuid + "', '" + reason + "', '" + (expiryDate == -1 ? 0 : 1) + "', '" + (expiryDate == -1 ? 0 : expiryDate) + "')");
         }
         catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public void logMute(CommandSender staffMember, String reason, long expiryDate) {
+
+        String staffUuid = (staffMember instanceof ProxiedPlayer) ? ((ProxiedPlayer) staffMember).getUniqueId().toString() : "CONSOLE";
+
+        try {
+            Main.getMySQL().update("INSERT INTO " +
+                    "`Mutes` (`mute_uuid`, `mute_start_date`, `mute_staff`, `mute_reason`, `mute_temporary`, `mute_end_date`) " +
+                    "VALUES ('" + uuid + "', '" + System.currentTimeMillis() + "', '" + staffUuid + "', '" + reason + "', '" + (expiryDate == -1 ? 0 : 1) + "', '" + (expiryDate == -1 ? 0 : expiryDate) + "')");
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean isBanned() {
+        final boolean[] returnValue = {false};
+        try {
+            Main.getMySQL().query("SELECT 1 FROM Bans WHERE ban_uuid='" + uuid + "' AND ban_is_active", resultSet -> {
+                if (resultSet != null) {
+                    while (resultSet.next()) {
+                        returnValue[0] = true;
+                    }
+                }
+            });
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return returnValue[0];
+    }
+
+    public boolean isMuted() {
+        final boolean[] returnValue = {false};
+        try {
+            Main.getMySQL().query("SELECT 1 FROM Mutes WHERE mute_uuid='" + uuid + "' AND mute_is_active", resultSet -> {
+                if (resultSet != null) {
+                    while (resultSet.next()) {
+                        returnValue[0] = true;
+                    }
+                }
+            });
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return returnValue[0];
     }
 }

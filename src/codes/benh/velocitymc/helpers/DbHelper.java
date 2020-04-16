@@ -35,6 +35,21 @@ public class DbHelper {
                     System.out.println("vSuite > Initialising table: Bans");
                 }
             });
+            sql.query("SHOW TABLES LIKE 'Mutes'", resultSet -> {
+                if (resultSet == null || !resultSet.next()) {
+                    sql.update("CREATE TABLE `Mutes` (" +
+                            "`mute_id` INT NOT NULL AUTO_INCREMENT, " +
+                            "`mute_uuid` VARCHAR(36) NOT NULL, " +
+                            "`mute_start_date` BIGINT NOT NULL, " +
+                            "`mute_staff` VARCHAR(36) NOT NULL, " +
+                            "`mute_reason` VARCHAR(200) NOT NULL, " +
+                            "`mute_temporary` BOOLEAN NOT NULL DEFAULT '0', " +
+                            "`mute_end_date` BIGINT, " +
+                            "`mute_is_active` BOOLEAN NOT NULL DEFAULT '1', " +
+                            "PRIMARY KEY (`mute_id`));");
+                    System.out.println("vSuite > Initialising table: Mutes");
+                }
+            });
             sql.query("SHOW TABLES LIKE 'Kicks'", resultSet -> {
                 if (resultSet == null || !resultSet.next()) {
                     sql.update("CREATE TABLE `Kicks` (" +

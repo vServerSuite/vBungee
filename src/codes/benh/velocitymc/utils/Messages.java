@@ -28,6 +28,13 @@ public class Messages {
     public static final String BAN_EXEMPT = MESSAGES_PREFIX + "Punishments.Ban.Exempt";
     public static final String BAN = MESSAGES_PREFIX + "Punishments.Ban.Message";
     public static final String BAN_INVALID_USAGE = MESSAGES_PREFIX + "Punishments.Ban.Usage";
+    public static final String BAN_JOIN_MESSAGE = MESSAGES_PREFIX + "Punishments.Ban.Login";
+
+    public static final String MUTE_ALERT = MESSAGES_PREFIX + "Punishments.Mute.Alert";
+    public static final String MUTE_EXEMPT = MESSAGES_PREFIX + "Punishments.Mute.Exempt";
+    public static final String MUTE = MESSAGES_PREFIX + "Punishments.Mute.Message";
+    public static final String MUTE_INVALID_USAGE = MESSAGES_PREFIX + "Punishments.Mute.Usage";
+    public static final String MUTE_JOIN_MESSAGE = MESSAGES_PREFIX + "Punishments.Mute.Chat";
 
     public static final String LOOKUP_INVALID_USAGE = MESSAGES_PREFIX + "Punishments.Lookup.Usage";
 }

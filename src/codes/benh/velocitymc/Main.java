@@ -17,11 +17,14 @@ import codes.benh.velocitymc.commands.BungeeStatsCommand;
 import codes.benh.velocitymc.commands.LobbyCommand;
 import codes.benh.velocitymc.commands.ReportCommand;
 import codes.benh.velocitymc.commands.StaffChatCommand;
+import codes.benh.velocitymc.commands.punishments.BanCommand;
 import codes.benh.velocitymc.commands.punishments.KickCommand;
-import codes.benh.velocitymc.commands.punishments.bans.BanCommand;
+import codes.benh.velocitymc.commands.punishments.MuteCommand;
 import codes.benh.velocitymc.commands.punishments.core.LookupCommand;
 import codes.benh.velocitymc.helpers.DbHelper;
 import codes.benh.velocitymc.listeners.JoinListener;
+import codes.benh.velocitymc.listeners.LoginListener;
+import codes.benh.velocitymc.listeners.MuteListener;
 import codes.benh.velocitymc.listeners.StaffChatListener;
 import codes.benh.velocitymc.runnables.TpsRunnable;
 import com.google.common.io.ByteStreams;
@@ -102,13 +105,16 @@ public class Main extends Plugin {
         pluginManager.registerCommand(this, new KickCommand());
         pluginManager.registerCommand(this, new LobbyCommand());
         pluginManager.registerCommand(this, new LookupCommand());
+        pluginManager.registerCommand(this, new MuteCommand());
         pluginManager.registerCommand(this, new ReportCommand());
         pluginManager.registerCommand(this, new StaffChatCommand());
     }
 
     private void registerListeners(PluginManager pluginManager) {
+        pluginManager.registerListener(this, new MuteListener());
         pluginManager.registerListener(this, new StaffChatListener());
         pluginManager.registerListener(this, new JoinListener());
+        pluginManager.registerListener(this, new LoginListener());
     }
 
     private void registerSchedulers(TaskScheduler taskScheduler) {
