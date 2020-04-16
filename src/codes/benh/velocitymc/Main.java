@@ -5,7 +5,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -72,6 +74,24 @@ public class Main extends Plugin {
                 getConfig().getString("Database.Params"));
 
         DbHelper.initialise();
+
+        parseLogDeletion();
+    }
+
+    private void parseLogDeletion() {
+        System.out.println("vSuite > Clearing up /logs/");
+        File dirPath = new File("./logs");
+        File[] files = null;
+        if (dirPath.isDirectory()) {
+            files = dirPath.listFiles();
+            assert files != null;
+            for (File file : files) {
+                if (file.getName().endsWith(".log.gz") && !file.getName().contains(new SimpleDateFormat("yyyy-MM-dd").format(new Date()))) {
+                    boolean delete = file.delete();
+                    System.out.println("vSuite > Deleted log file " + file.getName() + " (Deleted? " + delete + ")");
+                }
+            }
+        }
     }
 
     private void registerCommands(PluginManager pluginManager) {
@@ -134,3 +154,4 @@ public class Main extends Plugin {
         }
     }
 }
+
