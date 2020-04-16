@@ -23,7 +23,7 @@ public class LookupCommand extends BaseCommand {
     @Override
     public void execute(CommandSender commandSender, String[] args) {
         if (args.length == 0) {
-            sendMessage(commandSender, Main.getInstance().getConfig().getString(Messages.LOOKUP_INVALID_USAGE), true);
+            sendMessage(commandSender, Messages.get(Messages.LOOKUP_INVALID_USAGE), true);
         }
         else {
             Player player;
@@ -85,7 +85,7 @@ public class LookupCommand extends BaseCommand {
                 }
             }
             else {
-                sendMessage(commandSender, Main.getInstance().getConfig().getString(Messages.PLAYER_NOT_FOUND).replaceAll("%player%", args[0]), true);
+                sendMessage(commandSender, Messages.get(Messages.PLAYER_NOT_FOUND).replaceAll("%player%", args[0]), true);
             }
         }
     }

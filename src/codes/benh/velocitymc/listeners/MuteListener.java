@@ -23,7 +23,7 @@ public class MuteListener extends BaseListener implements Listener {
                     Mute mute = player.getMutes().stream().filter(Mute::isActive)
                             .findFirst()
                             .orElseThrow(NullPointerException::new);
-                    String messageToSend = Main.getInstance().getConfig().getString(Messages.MUTE_JOIN_MESSAGE)
+                    String messageToSend = Messages.get(Messages.MUTE_JOIN_MESSAGE)
                             .replaceAll("%expiry_date%", mute.getMuteEndDate() == 0 ? "never" : new SimpleDateFormat("dd-MM-yyyy '&7@&e' HH:mm").format(mute.getMuteEndDate()))
                             .replaceAll("%reason%", mute.getReason())
                             .replaceAll("%id%", String.valueOf(mute.getId()));

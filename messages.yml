@@ -1,0 +1,41 @@
+Prefix: '&evBungee &8&l» &7'
+PlayerNotFound: '&cWe could not find &e%player%&7 on the network.'
+StaffChat:
+  Format: '&7(&e&lStaff&7) (&b%server%&7) &c%player% &8» &b%message%'
+  Toggle: 'You have &e%status%&7 staff chat'
+Report:
+  Confirmation: 'Your report has been received and will be reviewed by staff.'
+  Format: '%prefix%&e%reporter%&7 has reported &e%reported%&7 for &e%reason%&7.'
+  FormatHover: "&7Click to join &e%server%&7."
+  Usage: 'Invalid Usage. Please type &e/report <player> <reason>&7.'
+Server:
+  Connect: 'Connecting you to &e%server%&7.'
+  NotFound: 'We could not find a server called &e%server%&7.'
+Punishments:
+  Kick:
+    Alert: '&e%player%&7 has been kicked by &e%staff%&7 with the reason &e%reason%&7.'
+    Exempt: '&e%player%&7 is exempt from being kicked.'
+    Message: '&7You have been kicked by &e%staff%&7 for &e%reason%&7.'
+    Usage: 'Invalid Usage. Please type &e/kick <player> <reason>&7.'
+  Ban:
+    Alert: '&e%player%&7 has been banned by &e%staff%&7 for &e%reason%&7 (Expires &e%expiry_date%&7).'
+    Exempt: '&e%player%&7 is exempt from being banned.'
+    Message: '&7You have been banned by &e%staff%&7 for &e%reason%&7. Your ban expires &e%expiry_date%&7.'
+    Usage: 'Invalid Usage. Please type &e/ban <player> [time] <reason>&7.'
+    Login:
+      - '&7&m-*----------------------------------------*--'
+      - ''
+      - '&7You are currently &e&nsuspended&7 from the network for &e%reason%&7.'
+      - '&7Your ban expires &e%expiry_date%&7.'
+      - '&7You can appeal at &ehttps://example.com/appeal'
+      - '&7Your ban Id is &e&o#%id%&7.'
+      - ''
+      - '&7&m-*----------------------------------------*--'
+  Mute:
+    Alert: '&e%player%&7 has been muted by &e%staff%&7 for &e%reason%&7 (Expires &e%expiry_date%&7).'
+    Exempt: '&e%player%&7 is exempt from being muted.'
+    Message: '&7You have been muted by &e%staff%&7 for &e%reason%&7. Your mute expires &e%expiry_date%&7.'
+    Usage: 'Invalid Usage. Please type &e/mute <player> [time] <reason>&7.'
+    Chat: 'You are currently &e&nmuted&7 for &e%reason%&7. Your mute expires &e%expiry_date%&7. ID: &e&o#%id%&7.'
+  Lookup:
+    Usage: 'Invalid Usage. Please type &e/lookup <player>'

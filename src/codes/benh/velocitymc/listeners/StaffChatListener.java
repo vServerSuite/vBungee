@@ -21,7 +21,7 @@ public class StaffChatListener extends BaseListener implements Listener {
                 e.setCancelled(true);
                 ProxyServer.getInstance().getPlayers().forEach(proxiedPlayers -> {
                     if (proxiedPlayers.hasPermission(Permissions.STAFF_CHAT_RECEIVE)) {
-                        String messageToSend = Main.getInstance().getConfig().getString(Messages.STAFF_CHAT_FORMAT)
+                        String messageToSend = Messages.get(Messages.STAFF_CHAT_FORMAT)
                                 .replaceAll("%server%", player.getProxiedPlayer().getServer().getInfo().getName())
                                 .replaceAll("%player%", player.getProxiedPlayer().getName())
                                 .replaceAll("%message%", e.getMessage());

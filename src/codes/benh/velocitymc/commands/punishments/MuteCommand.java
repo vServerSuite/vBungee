@@ -23,7 +23,7 @@ public class MuteCommand extends BaseCommand {
     public void execute(CommandSender commandSender, String[] args) {
         if (commandSender.hasPermission(Permissions.MUTE) || commandSender.hasPermission(Permissions.MUTE_TEMPORARY)) {
             if (args.length < 2) {
-                sendMessage(commandSender, Main.getInstance().getConfig().getString(Messages.MUTE_INVALID_USAGE), true);
+                sendMessage(commandSender, Messages.get(Messages.MUTE_INVALID_USAGE), true);
             }
             else {
                 long expiresCheck = -1;
@@ -35,7 +35,7 @@ public class MuteCommand extends BaseCommand {
                 }
 
                 if (expiresCheck != -1 && args.length == 2) {
-                    sendMessage(commandSender, Main.getInstance().getConfig().getString(Messages.MUTE_INVALID_USAGE), true);
+                    sendMessage(commandSender, Messages.get(Messages.MUTE_INVALID_USAGE), true);
                 }
                 else {
                     if (expiresCheck == -1 && !commandSender.hasPermission(Permissions.MUTE)) {
@@ -55,11 +55,11 @@ public class MuteCommand extends BaseCommand {
                             player.hasPermission(Permissions.MUTE_EXEMPT)
                                     .thenAcceptAsync(result -> {
                                         if (result) {
-                                            sendMessage(commandSender, Main.getInstance().getConfig().getString(Messages.MUTE_EXEMPT).replaceAll("%player%", player.getUsername()), true);
+                                            sendMessage(commandSender, Messages.get(Messages.MUTE_EXEMPT).replaceAll("%player%", player.getUsername()), true);
                                         }
                                         else {
                                             if (proxiedPlayer != null) {
-                                                String messageToSend = Main.getInstance().getConfig().getString(Messages.MUTE)
+                                                String messageToSend = Messages.get(Messages.MUTE)
                                                         .replaceAll("%staff%", commandSender.getName())
                                                         .replaceAll("%reason%", reason)
                                                         .replaceAll("%expiry_date%", finalExpiresCheck == -1 ? "never" : new SimpleDateFormat("dd-MM-yyyy '&7@&e' HH:mm:ss").format(new Date(finalExpiresCheck)));
@@ -68,7 +68,7 @@ public class MuteCommand extends BaseCommand {
                                             player.logMute(commandSender, reason, finalExpiresCheck);
                                             ProxyServer.getInstance().getPlayers().forEach(p -> {
                                                 if (p.hasPermission(Permissions.MUTE_RECEIVE)) {
-                                                    String muteAlert = Main.getInstance().getConfig().getString(Messages.MUTE_ALERT)
+                                                    String muteAlert = Messages.get(Messages.MUTE_ALERT)
                                                             .replaceAll("%staff%", commandSender.getName())
                                                             .replaceAll("%player%", player.getUsername())
                                                             .replaceAll("%reason%", reason)
@@ -80,7 +80,7 @@ public class MuteCommand extends BaseCommand {
                                     });
                         }
                         else {
-                            sendMessage(commandSender, Main.getInstance().getConfig().getString(Messages.PLAYER_NOT_FOUND).replaceAll("%player%", args[0]), true);
+                            sendMessage(commandSender, Messages.get(Messages.PLAYER_NOT_FOUND).replaceAll("%player%", args[0]), true);
                         }
                     }
                 }

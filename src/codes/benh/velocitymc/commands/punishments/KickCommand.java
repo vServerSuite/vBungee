@@ -19,30 +19,30 @@ public class KickCommand extends BaseCommand {
     @Override
     public void execute(CommandSender commandSender, String[] args) {
         if (args.length < 2) {
-            sendMessage(commandSender, Main.getInstance().getConfig().getString(Messages.KICK_INVALID_USAGE), true);
+            sendMessage(commandSender, Messages.get(Messages.KICK_INVALID_USAGE), true);
         }
         else {
             if (ProxyServer.getInstance().getPlayer(args[0]) == null) {
-                sendMessage(commandSender, Main.getInstance().getConfig().getString(Messages.PLAYER_NOT_FOUND).replaceAll("%player%", args[0]), true);
+                sendMessage(commandSender, Messages.get(Messages.PLAYER_NOT_FOUND).replaceAll("%player%", args[0]), true);
             }
             else {
                 Player player = Player.get(ProxyServer.getInstance().getPlayer(args[0]));
                 if (player.getProxiedPlayer().hasPermission(Permissions.KICK_EXEMPT)) {
-                    sendMessage(player, Main.getInstance().getConfig().getString(Messages.KICK_EXEMPT).replaceAll("%player%", player.getProxiedPlayer().getName()), true);
+                    sendMessage(player, Messages.get(Messages.KICK_EXEMPT).replaceAll("%player%", player.getProxiedPlayer().getName()), true);
                 }
                 else {
                     args[0] = "";
                     String reason = String.join(" ", args).trim();
                     player.logKick(commandSender, reason);
 
-                    String kickMessage = Main.getInstance().getConfig().getString(Messages.KICK)
+                    String kickMessage = Messages.get(Messages.KICK)
                             .replaceAll("%reason%", reason)
                             .replaceAll("%staff%", commandSender.getName());
                     player.getProxiedPlayer().disconnect(new TextComponent(ChatColor.translateAlternateColorCodes('&', kickMessage)));
 
                     ProxyServer.getInstance().getPlayers().forEach(p -> {
                         if (p.hasPermission(Permissions.KICK_RECEIVE)) {
-                            String kickAlert = Main.getInstance().getConfig().getString(Messages.KICK_ALERT)
+                            String kickAlert = Messages.get(Messages.KICK_ALERT)
                                     .replaceAll("%staff%", commandSender.getName())
                                     .replaceAll("%player%", player.getProxiedPlayer().getName())
                                     .replaceAll("%reason%", reason);

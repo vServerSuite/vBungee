@@ -30,19 +30,19 @@ public class LobbyCommand extends BaseCommand {
             Random rand = new Random();
             ServerInfo chosenLobby = ProxyServer.getInstance().getServerInfo(lobbies.get(rand.nextInt(lobbies.size())));
             player.connect(chosenLobby);
-            String messageToSend = Main.getInstance().getConfig().getString(Messages.SERVER_CONNECT)
+            String messageToSend = Messages.get(Messages.SERVER_CONNECT)
                     .replaceAll("%server%", chosenLobby.getName());
             sendMessage(player, messageToSend, true);
         }
         else {
             if (ProxyServer.getInstance().getServerInfo(args[0]) == null) {
-                String messageToSend = Main.getInstance().getConfig().getString(Messages.SERVER_NOT_FOUND)
+                String messageToSend = Messages.get(Messages.SERVER_NOT_FOUND)
                         .replaceAll("%server%", args[0]);
                 sendMessage(player, messageToSend, true);
             }
             else {
                 player.connect(Main.getInstance().getProxy().getServerInfo(args[0]));
-                String messageToSend = Main.getInstance().getConfig().getString(Messages.SERVER_CONNECT)
+                String messageToSend = Messages.get(Messages.SERVER_CONNECT)
                         .replaceAll("%server%", args[0]);
                 sendMessage(player, messageToSend, true);
             }

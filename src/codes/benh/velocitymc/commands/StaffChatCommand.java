@@ -24,18 +24,18 @@ public class StaffChatCommand extends BaseCommand {
         if (args.length == 0) {
             if (Main.getInstance().staffChatToggled.contains(player)) {
                 Main.getInstance().staffChatToggled.remove(player);
-                sendMessage(player, Main.getInstance().getConfig().getString(Messages.STAFF_CHAT_TOGGLE).replaceAll("%status%", "&cdisabled"), true);
+                sendMessage(player, Messages.get(Messages.STAFF_CHAT_TOGGLE).replaceAll("%status%", "&cdisabled"), true);
             }
             else {
                 Main.getInstance().staffChatToggled.add(player);
-                sendMessage(player, Main.getInstance().getConfig().getString(Messages.STAFF_CHAT_TOGGLE).replaceAll("%status%", "&aenabled"), true);
+                sendMessage(player, Messages.get(Messages.STAFF_CHAT_TOGGLE).replaceAll("%status%", "&aenabled"), true);
             }
         }
         else {
             String message = String.join(" &b", args).trim();
             ProxyServer.getInstance().getPlayers().forEach(proxiedPlayer -> {
                 if (proxiedPlayer.hasPermission(Permissions.STAFF_CHAT_RECEIVE)) {
-                    String messageToSend = Main.getInstance().getConfig().getString(Messages.STAFF_CHAT_FORMAT)
+                    String messageToSend = Messages.get(Messages.STAFF_CHAT_FORMAT)
                             .replaceAll("%server%", player.getServer().getInfo().getName())
                             .replaceAll("%player%", player.getName())
                             .replaceAll("%message%", message);

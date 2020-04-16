@@ -29,11 +29,11 @@ public class ReportCommand extends BaseCommand implements TabExecutor {
         ProxiedPlayer player = (ProxiedPlayer) commandSender;
 
         if (args.length < 2) {
-            sendMessage(player, Main.getInstance().getConfig().getString(Messages.REPORT_INVALID_USAGE), true);
+            sendMessage(player, Messages.get(Messages.REPORT_INVALID_USAGE), true);
         }
         else {
             if (ProxyServer.getInstance().getPlayer(args[0]) == null) {
-                sendMessage(player, Main.getInstance().getConfig().getString(Messages.PLAYER_NOT_FOUND).replaceAll("%player%", args[0]), true);
+                sendMessage(player, Messages.get(Messages.PLAYER_NOT_FOUND).replaceAll("%player%", args[0]), true);
             }
             else {
                 ProxiedPlayer target = ProxyServer.getInstance().getPlayer(args[0]);
@@ -41,7 +41,7 @@ public class ReportCommand extends BaseCommand implements TabExecutor {
                 ProxyServer.getInstance().getPlayers().forEach(proxiedPlayer -> {
                     if (proxiedPlayer.hasPermission(Permissions.REPORT_RECEIVE)) {
                         args[0] = "";
-                        String reportMessage = translateColorCodes(Main.getInstance().getConfig().getString(Messages.REPORT_FORMAT)
+                        String reportMessage = translateColorCodes(Messages.get(Messages.REPORT_FORMAT)
                                 .replaceAll("%prefix%", getPrefix())
                                 .replaceAll("%reporter%", player.getName())
                                 .replaceAll("%reported%", target.getName())
@@ -49,7 +49,7 @@ public class ReportCommand extends BaseCommand implements TabExecutor {
 
                         TextComponent textComponent = new TextComponent(reportMessage);
                         textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(
-                                translateColorCodes(Main.getInstance().getConfig().getString(Messages.REPORT_FORMAT_HOVER)
+                                translateColorCodes(Messages.get(Messages.REPORT_FORMAT_HOVER)
                                         .replaceAll("%server%", target.getServer().getInfo().getName()))
                         ).create()));
                         textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/server " + target.getServer().getInfo().getName()));
@@ -57,7 +57,7 @@ public class ReportCommand extends BaseCommand implements TabExecutor {
                         sendMessage(proxiedPlayer, textComponent);
                     }
                 });
-                sendMessage(player, Main.getInstance().getConfig().getString(Messages.REPORT_CONFIRMATION), true);
+                sendMessage(player, Messages.get(Messages.REPORT_CONFIRMATION), true);
             }
         }
     }

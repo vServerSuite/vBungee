@@ -25,7 +25,7 @@ public abstract class BaseListener {
     }
 
     protected String getPrefix() {
-        return translateColorCodes(Main.getInstance().getConfig().getString(Messages.PREFIX));
+        return translateColorCodes(Messages.get(Messages.PREFIX));
     }
 
     protected String getDayOfMonthSuffix(final int n) {

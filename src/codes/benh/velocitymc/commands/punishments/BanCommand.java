@@ -24,7 +24,7 @@ public class BanCommand extends BaseCommand {
     public void execute(CommandSender commandSender, String[] args) {
         if (commandSender.hasPermission(Permissions.BAN) || commandSender.hasPermission(Permissions.BAN_TEMPORARY)) {
             if (args.length < 2) {
-                sendMessage(commandSender, Main.getInstance().getConfig().getString(Messages.BAN_INVALID_USAGE), true);
+                sendMessage(commandSender, Messages.get(Messages.BAN_INVALID_USAGE), true);
             }
             else {
                 long expiresCheck = -1;
@@ -36,7 +36,7 @@ public class BanCommand extends BaseCommand {
                 }
 
                 if (expiresCheck != -1 && args.length == 2) {
-                    sendMessage(commandSender, Main.getInstance().getConfig().getString(Messages.BAN_INVALID_USAGE), true);
+                    sendMessage(commandSender, Messages.get(Messages.BAN_INVALID_USAGE), true);
                 }
                 else {
                     if (expiresCheck == -1 && !commandSender.hasPermission(Permissions.BAN)) {
@@ -50,7 +50,7 @@ public class BanCommand extends BaseCommand {
                             args[1] = "";
                         }
                         String reason = String.join(" ", args).trim();
-                        String banMessage = Main.getInstance().getConfig().getString(Messages.BAN)
+                        String banMessage = Messages.get(Messages.BAN)
                                 .replaceAll("%reason%", reason)
                                 .replaceAll("%staff%", commandSender.getName())
                                 .replaceAll("%expiry_date%", expiresCheck == -1 ? "never" : new SimpleDateFormat("dd-MM-yyyy '&7@&e' HH:mm:ss").format(new Date(expiresCheck)));
@@ -60,7 +60,7 @@ public class BanCommand extends BaseCommand {
                             player.hasPermission(Permissions.BAN_EXEMPT)
                                     .thenAcceptAsync(result -> {
                                         if (result) {
-                                            sendMessage(commandSender, Main.getInstance().getConfig().getString(Messages.BAN_EXEMPT).replaceAll("%player%", player.getUsername()), true);
+                                            sendMessage(commandSender, Messages.get(Messages.BAN_EXEMPT).replaceAll("%player%", player.getUsername()), true);
                                         }
                                         else {
                                             if (proxiedPlayer != null) {
@@ -69,7 +69,7 @@ public class BanCommand extends BaseCommand {
                                             player.logBan(commandSender, reason, finalExpiresCheck);
                                             ProxyServer.getInstance().getPlayers().forEach(p -> {
                                                 if (p.hasPermission(Permissions.BAN_RECEIVE)) {
-                                                    String banAlert = Main.getInstance().getConfig().getString(Messages.BAN_ALERT)
+                                                    String banAlert = Messages.get(Messages.BAN_ALERT)
                                                             .replaceAll("%staff%", commandSender.getName())
                                                             .replaceAll("%player%", player.getUsername())
                                                             .replaceAll("%reason%", reason)
@@ -81,7 +81,7 @@ public class BanCommand extends BaseCommand {
                                     });
                         }
                         else {
-                            sendMessage(commandSender, Main.getInstance().getConfig().getString(Messages.PLAYER_NOT_FOUND).replaceAll("%player%", args[0]), true);
+                            sendMessage(commandSender, Messages.get(Messages.PLAYER_NOT_FOUND).replaceAll("%player%", args[0]), true);
                         }
                     }
                 }

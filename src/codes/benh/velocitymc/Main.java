@@ -27,6 +27,7 @@ import codes.benh.velocitymc.listeners.LoginListener;
 import codes.benh.velocitymc.listeners.MuteListener;
 import codes.benh.velocitymc.listeners.StaffChatListener;
 import codes.benh.velocitymc.runnables.TpsRunnable;
+import codes.benh.velocitymc.utils.Messages;
 import com.google.common.io.ByteStreams;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
@@ -68,7 +69,9 @@ public class Main extends Plugin {
         registerCommands(pluginManager);
         registerListeners(pluginManager);
         registerSchedulers(getProxy().getScheduler());
+
         saveDefaultConfig();
+        Messages.saveDefaultMessages();
 
         mySQL = new MySQL(
                 getConfig().getString("Database.Host"),
