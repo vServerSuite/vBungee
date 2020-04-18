@@ -3,10 +3,11 @@ package codes.benh.velocitymc.commands.punishments;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import codes.benh.velocitymc.Main;
 import codes.benh.velocitymc.base.BaseCommand;
 import codes.benh.velocitymc.models.Player;
+import codes.benh.velocitymc.models.punishments.PunishmentType;
 import codes.benh.velocitymc.utils.DateUtil;
+import codes.benh.velocitymc.utils.DiscordUtils;
 import codes.benh.velocitymc.utils.Messages;
 import codes.benh.velocitymc.utils.Permissions;
 import net.md_5.bungee.api.CommandSender;
@@ -46,7 +47,7 @@ public class BanCommand extends BaseCommand {
                         ProxiedPlayer proxiedPlayer = ProxyServer.getInstance().getPlayer(args[0]);
                         Player player = proxiedPlayer == null ? Player.get(args[0]) : Player.get(proxiedPlayer);
                         args[0] = "";
-                        if(expiresCheck == -1) {
+                        if (expiresCheck != -1) {
                             args[1] = "";
                         }
                         String reason = String.join(" ", args).trim();
@@ -66,7 +67,11 @@ public class BanCommand extends BaseCommand {
                                             if (proxiedPlayer != null) {
                                                 proxiedPlayer.disconnect(new TextComponent(translateColorCodes(banMessage)));
                                             }
-                                            player.logBan(commandSender, reason, finalExpiresCheck);
+                                            String newBanId = player.logPunishment(PunishmentType.BAN, commandSender, reason, finalExpiresCheck);
+
+                                            System.out.println(newBanId);
+
+                                            DiscordUtils.logPunishment(PunishmentType.BAN, newBanId, player, commandSender instanceof ProxiedPlayer ? Player.get(commandSender) : commandSender, reason, finalExpiresCheck);
                                             ProxyServer.getInstance().getPlayers().forEach(p -> {
                                                 if (p.hasPermission(Permissions.BAN_RECEIVE)) {
                                                     String banAlert = Messages.get(Messages.BAN_ALERT)

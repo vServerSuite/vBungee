@@ -18,17 +18,18 @@ import codes.benh.velocitymc.commands.LobbyCommand;
 import codes.benh.velocitymc.commands.ReportCommand;
 import codes.benh.velocitymc.commands.StaffChatCommand;
 import codes.benh.velocitymc.commands.punishments.BanCommand;
-import codes.benh.velocitymc.commands.punishments.KickCommand;
-import codes.benh.velocitymc.commands.punishments.MuteCommand;
-import codes.benh.velocitymc.commands.punishments.core.LookupCommand;
+import codes.benh.velocitymc.discord.base.CommandHandler;
 import codes.benh.velocitymc.helpers.DbHelper;
 import codes.benh.velocitymc.listeners.JoinListener;
 import codes.benh.velocitymc.listeners.LoginListener;
-import codes.benh.velocitymc.listeners.MuteListener;
 import codes.benh.velocitymc.listeners.StaffChatListener;
+import codes.benh.velocitymc.runnables.BanCheckRunnable;
 import codes.benh.velocitymc.runnables.TpsRunnable;
 import codes.benh.velocitymc.utils.Messages;
 import com.google.common.io.ByteStreams;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -45,6 +46,7 @@ public class Main extends Plugin {
     private static Main main;
     private static MySQL mySQL;
     private static LuckPerms api;
+    private static JDA jda;
 
     public List<ProxiedPlayer> staffChatToggled = new ArrayList<>();
 
@@ -58,6 +60,10 @@ public class Main extends Plugin {
 
     public static LuckPerms getLuckPermsAPI() {
         return api;
+    }
+
+    public static JDA getJda() {
+        return jda;
     }
 
     public void onEnable() {
@@ -84,6 +90,18 @@ public class Main extends Plugin {
         DbHelper.initialise();
 
         parseLogDeletion();
+        deleteFile(new File("./locations.yml"));
+
+        if (getConfig().getBoolean("Discord.Enabled")) {
+            try {
+                jda = JDABuilder.create(getConfig().getString("Discord.Token"), Arrays.asList(GatewayIntent.values())).build();
+                jda.addEventListener(new CommandHandler());
+                jda.setAutoReconnect(true);
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     private void parseLogDeletion() {
@@ -99,29 +117,26 @@ public class Main extends Plugin {
 
     private void deleteFile(File file) {
         boolean deleted = file.delete();
-        System.out.println("vSuite > Log File Removed (Deleted? " + deleted + ")");
+        System.out.println("vSuite > File Removed (Deleted? " + deleted + ")");
     }
 
     private void registerCommands(PluginManager pluginManager) {
         pluginManager.registerCommand(this, new BanCommand());
         pluginManager.registerCommand(this, new BungeeStatsCommand());
-        pluginManager.registerCommand(this, new KickCommand());
         pluginManager.registerCommand(this, new LobbyCommand());
-        pluginManager.registerCommand(this, new LookupCommand());
-        pluginManager.registerCommand(this, new MuteCommand());
         pluginManager.registerCommand(this, new ReportCommand());
         pluginManager.registerCommand(this, new StaffChatCommand());
     }
 
     private void registerListeners(PluginManager pluginManager) {
-        pluginManager.registerListener(this, new MuteListener());
         pluginManager.registerListener(this, new StaffChatListener());
         pluginManager.registerListener(this, new JoinListener());
         pluginManager.registerListener(this, new LoginListener());
     }
 
     private void registerSchedulers(TaskScheduler taskScheduler) {
-        taskScheduler.schedule(main, new TpsRunnable(), 1000, 50, TimeUnit.MILLISECONDS);
+        taskScheduler.schedule(this, new TpsRunnable(), 1000, 50, TimeUnit.MILLISECONDS);
+        taskScheduler.schedule(this, new BanCheckRunnable(), 1000, 30000, TimeUnit.MILLISECONDS);
     }
 
     /**

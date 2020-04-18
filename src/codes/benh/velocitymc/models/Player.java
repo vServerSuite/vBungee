@@ -1,15 +1,17 @@
 package codes.benh.velocitymc.models;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 import codes.benh.velocitymc.Main;
-import codes.benh.velocitymc.models.punishments.Ban;
-import codes.benh.velocitymc.models.punishments.Kick;
-import codes.benh.velocitymc.models.punishments.Mute;
+import codes.benh.velocitymc.models.punishments.Punishment;
+import codes.benh.velocitymc.models.punishments.PunishmentType;
+import codes.benh.velocitymc.utils.PlayerUtils;
 import net.luckperms.api.cacheddata.CachedPermissionData;
 import net.luckperms.api.context.ContextManager;
 import net.md_5.bungee.api.CommandSender;
@@ -21,12 +23,11 @@ public class Player {
     private ProxiedPlayer player;
     private UUID uuid;
     private String username;
+    private String discordId;
 
     private long _firstLogin = 0;
     private long _lastLogin = 0;
-    private List<Ban> _bans = new ArrayList<>();
-    private List<Mute> _mutes = new ArrayList<>();
-    private List<Kick> _kicks = new ArrayList<>();
+    private List<Punishment> _bans = new ArrayList<>();
 
     private Player(ProxiedPlayer player) {
         this.player = player;
@@ -56,7 +57,7 @@ public class Player {
     }
 
     public static Player get(String username) {
-        UUID uid = getUUIDFromUsername(username);
+        UUID uid = PlayerUtils.getUUIDFromUsername(username);
         if (uid != null) {
             return new Player(uid);
         }
@@ -65,45 +66,8 @@ public class Player {
         }
     }
 
-    public static String getUsernameFromUUID(UUID uuid) {
-        String[] returnValue = new String[1];
-        try {
-            Main.getMySQL().query("SELECT player_username FROM Players WHERE player_uuid='" + uuid + "'", resultSet -> {
-                if (resultSet != null) {
-                    while (resultSet.next()) {
-                        returnValue[0] = resultSet.getString("player_username");
-                    }
-                }
-            });
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return returnValue[0];
-    }
-
-    public static UUID getUUIDFromUsername(String username) {
-        String[] returnValue = new String[1];
-        returnValue[0] = null;
-        try {
-            Main.getMySQL().query("SELECT player_uuid FROM Players WHERE player_username='" + username + "'", resultSet -> {
-                if (resultSet != null) {
-                    while (resultSet.next()) {
-                        returnValue[0] = resultSet.getString("player_uuid");
-                    }
-                }
-            });
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
-        }
-        if (returnValue[0] != null) {
-            return UUID.fromString(returnValue[0]);
-        }
-        else {
-            return null;
-        }
+    public String getDiscordId() {
+        return discordId;
     }
 
     public String getUsername() {
@@ -127,62 +91,44 @@ public class Player {
                             _firstLogin = resultSet.getLong("player_first_login");
                             _lastLogin = resultSet.getLong("player_last_login");
                             username = resultSet.getString("player_username");
+                            discordId = resultSet.getString("player_discord_id");
                         }
                     }
                 });
-                Main.getMySQL().query("SELECT * FROM Bans WHERE ban_uuid='" + uuid + "'", resultSet -> {
-                    if (resultSet != null) {
-                        while (resultSet.next()) {
-                            Ban ban = new Ban();
-                            ban.setId(resultSet.getInt("ban_id"));
-                            ban.setPlayer(getUsernameFromUUID(uuid));
-                            ban.setDateStarted(resultSet.getLong("ban_start_date"));
-                            ban.setStaff(getUsernameFromUUID(UUID.fromString(resultSet.getString("ban_staff"))));
-                            ban.setReason(resultSet.getString("ban_reason"));
-                            ban.setTemporary(resultSet.getBoolean("ban_temporary"));
-                            ban.setBanEndDate(resultSet.getLong("ban_end_date"));
-                            ban.setActive(resultSet.getBoolean("ban_is_active"));
-
-                            _bans.add(ban);
-                        }
-                    }
-                });
-                Main.getMySQL().query("SELECT * FROM Mutes WHERE mute_uuid='" + uuid + "'", resultSet -> {
-                    if (resultSet != null) {
-                        while (resultSet.next()) {
-                            Mute mute = new Mute();
-                            mute.setId(resultSet.getInt("mute_id"));
-                            mute.setPlayer(getUsernameFromUUID(uuid));
-                            mute.setDateStarted(resultSet.getLong("mute_start_date"));
-                            mute.setStaff(getUsernameFromUUID(UUID.fromString(resultSet.getString("mute_staff"))));
-                            mute.setReason(resultSet.getString("mute_reason"));
-                            mute.setTemporary(resultSet.getBoolean("mute_temporary"));
-                            mute.setMuteEndDate(resultSet.getLong("mute_end_date"));
-                            mute.setActive(resultSet.getBoolean("mute_is_active"));
-
-                            _mutes.add(mute);
-                        }
-                    }
-                });
-                Main.getMySQL().query("SELECT * FROM Kicks WHERE kick_uuid='" + uuid + "'", resultSet -> {
-                    if (resultSet != null) {
-                        while (resultSet.next()) {
-                            Kick kick = new Kick();
-                            kick.setId(resultSet.getInt("kick_id"));
-                            kick.setPlayer(getUsernameFromUUID(uuid));
-                            kick.setDate(resultSet.getLong("kick_date"));
-                            kick.setStaff(getUsernameFromUUID(UUID.fromString(resultSet.getString("kick_staff"))));
-                            kick.setReason(resultSet.getString("kick_reason"));
-
-                            _kicks.add(kick);
-                        }
-                    }
-                });
+                _bans = getPunishments(PunishmentType.BAN);
             }
         }
         catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private List<Punishment> getPunishments(PunishmentType type) {
+        List<Punishment> punishments = new ArrayList<>();
+        try {
+            Main.getMySQL().query("SELECT * FROM Punishments WHERE punishment_uuid='" + uuid + "' AND punishment_type='" + type + "'", resultSet -> {
+                if (resultSet != null) {
+                    while (resultSet.next()) {
+                        Punishment punishment = new Punishment();
+                        punishment.setId(resultSet.getString("punishment_id"));
+                        punishment.setType(PunishmentType.valueOf(resultSet.getString("punishment_type")));
+                        punishment.setPlayer(PlayerUtils.getUsernameFromUUID(uuid));
+                        punishment.setDateIssued(resultSet.getLong("punishment_issue_date"));
+                        punishment.setStaff(PlayerUtils.getUsernameFromUUID(UUID.fromString(resultSet.getString("punishment_staff"))));
+                        punishment.setReason(resultSet.getString("punishment_reason"));
+                        punishment.setTemporary(resultSet.getBoolean("punishment_temporary"));
+                        punishment.setDateEnded(resultSet.getLong("punishment_end_date"));
+                        punishment.setActive(resultSet.getBoolean("punishment_is_active"));
+                        punishment.setDiscordMessageId(resultSet.getLong("punishment_discord_message_id"));
+                        punishments.add(punishment);
+                    }
+                }
+            });
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return punishments;
     }
 
     public ProxiedPlayer getProxiedPlayer() {
@@ -197,16 +143,8 @@ public class Player {
         return _lastLogin;
     }
 
-    public List<Ban> getBans() {
+    public List<Punishment> getBans() {
         return _bans;
-    }
-
-    public List<Mute> getMutes() {
-        return _mutes;
-    }
-
-    public List<Kick> getKicks() {
-        return _kicks;
     }
 
     public boolean exists() {
@@ -270,38 +208,27 @@ public class Player {
         }
     }
 
-    public void logBan(CommandSender staffMember, String reason, long expiryDate) {
-
+    public String logPunishment(PunishmentType type, CommandSender staffMember, String reason, long expiryDate) {
+        String punishmentId = getUniqueId();
+        System.out.println(punishmentId);
         String staffUuid = (staffMember instanceof ProxiedPlayer) ? ((ProxiedPlayer) staffMember).getUniqueId().toString() : "CONSOLE";
 
         try {
             Main.getMySQL().update("INSERT INTO " +
-                    "`Bans` (`ban_uuid`, `ban_start_date`, `ban_staff`, `ban_reason`, `ban_temporary`, `ban_end_date`) " +
-                    "VALUES ('" + uuid + "', '" + System.currentTimeMillis() + "', '" + staffUuid + "', '" + reason + "', '" + (expiryDate == -1 ? 0 : 1) + "', '" + (expiryDate == -1 ? 0 : expiryDate) + "')");
+                    "`Punishments` (`punishment_id`, `punishment_type`, `punishment_uuid`, `punishment_issue_date`, `punishment_staff`, `punishment_reason`, `punishment_temporary`, `punishment_end_date`) " +
+                    "VALUES ('" + punishmentId + "', '" + type + "', '" + uuid + "', '" + System.currentTimeMillis() + "', '" + staffUuid + "', '" + reason + "', '" + (expiryDate == -1 ? 0 : 1) + "', '" + (expiryDate == -1 ? 0 : expiryDate) + "')");
+            return punishmentId;
         }
         catch (SQLException e) {
             e.printStackTrace();
-        }
-    }
-
-    public void logMute(CommandSender staffMember, String reason, long expiryDate) {
-
-        String staffUuid = (staffMember instanceof ProxiedPlayer) ? ((ProxiedPlayer) staffMember).getUniqueId().toString() : "CONSOLE";
-
-        try {
-            Main.getMySQL().update("INSERT INTO " +
-                    "`Mutes` (`mute_uuid`, `mute_start_date`, `mute_staff`, `mute_reason`, `mute_temporary`, `mute_end_date`) " +
-                    "VALUES ('" + uuid + "', '" + System.currentTimeMillis() + "', '" + staffUuid + "', '" + reason + "', '" + (expiryDate == -1 ? 0 : 1) + "', '" + (expiryDate == -1 ? 0 : expiryDate) + "')");
-        }
-        catch (SQLException e) {
-            e.printStackTrace();
+            return null;
         }
     }
 
     public boolean isBanned() {
         final boolean[] returnValue = {false};
         try {
-            Main.getMySQL().query("SELECT 1 FROM Bans WHERE ban_uuid='" + uuid + "' AND ban_is_active", resultSet -> {
+            Main.getMySQL().query("SELECT 1 FROM Punishments WHERE punishment_uuid='" + uuid + "' AND punishment_is_active='1' AND punishment_type='" + PunishmentType.BAN + "'", resultSet -> {
                 if (resultSet != null) {
                     while (resultSet.next()) {
                         returnValue[0] = true;
@@ -315,20 +242,45 @@ public class Player {
         return returnValue[0];
     }
 
-    public boolean isMuted() {
-        final boolean[] returnValue = {false};
+    private String getUniqueId() {
+        String returnValue = generateId();
+
+        while (Objects.requireNonNull(getIds()).contains(returnValue)) {
+            returnValue = generateId();
+        }
+
+        return generateId();
+    }
+
+    private List<String> getIds() {
+
         try {
-            Main.getMySQL().query("SELECT 1 FROM Mutes WHERE mute_uuid='" + uuid + "' AND mute_is_active", resultSet -> {
-                if (resultSet != null) {
-                    while (resultSet.next()) {
-                        returnValue[0] = true;
-                    }
+            List<String> returnValue = new ArrayList<>();
+            ResultSet resultSet = Main.getMySQL().query("SELECT punishment_id from Punishments");
+            if (resultSet != null) {
+                while (resultSet.next()) {
+                    returnValue.add(resultSet.getString("punishment_id"));
                 }
-            });
+            }
+            return returnValue;
         }
         catch (SQLException e) {
             e.printStackTrace();
+            return null;
         }
-        return returnValue[0];
+    }
+
+    ;
+
+    private String generateId() {
+        final String ALPHA_NUMERIC_STRING = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        int count = 5;
+        StringBuilder builder = new StringBuilder();
+        while (count-- != 0) {
+            int character = (int) (Math.random() * ALPHA_NUMERIC_STRING.length());
+            builder.append(ALPHA_NUMERIC_STRING.charAt(character));
+        }
+
+        return builder.toString();
     }
 }
