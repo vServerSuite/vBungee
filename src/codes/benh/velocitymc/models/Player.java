@@ -28,6 +28,7 @@ public class Player {
     private long _firstLogin = 0;
     private long _lastLogin = 0;
     private List<Punishment> _bans = new ArrayList<>();
+    private List<Punishment> _mutes = new ArrayList<>();
 
     private Player(ProxiedPlayer player) {
         this.player = player;
@@ -96,6 +97,7 @@ public class Player {
                     }
                 });
                 _bans = getPunishments(PunishmentType.BAN);
+                _mutes = getPunishments(PunishmentType.MUTE);
             }
         }
         catch (SQLException e) {
@@ -145,6 +147,10 @@ public class Player {
 
     public List<Punishment> getBans() {
         return _bans;
+    }
+
+    public List<Punishment> getMutes() {
+        return _mutes;
     }
 
     public boolean exists() {
@@ -229,6 +235,23 @@ public class Player {
         final boolean[] returnValue = {false};
         try {
             Main.getMySQL().query("SELECT 1 FROM Punishments WHERE punishment_uuid='" + uuid + "' AND punishment_is_active='1' AND punishment_type='" + PunishmentType.BAN + "'", resultSet -> {
+                if (resultSet != null) {
+                    while (resultSet.next()) {
+                        returnValue[0] = true;
+                    }
+                }
+            });
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return returnValue[0];
+    }
+
+    public boolean isMuted() {
+        final boolean[] returnValue = {false};
+        try {
+            Main.getMySQL().query("SELECT 1 FROM Punishments WHERE punishment_uuid='" + uuid + "' AND punishment_is_active='1' AND punishment_type='" + PunishmentType.MUTE + "'", resultSet -> {
                 if (resultSet != null) {
                     while (resultSet.next()) {
                         returnValue[0] = true;

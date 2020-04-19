@@ -32,11 +32,6 @@ public class Messages {
     
     public static final String PUNISHMENTS_PREFIX = "Punishments.";
 
-    public static final String KICK_ALERT = PUNISHMENTS_PREFIX + "Kick.Alert";
-    public static final String KICK_EXEMPT = PUNISHMENTS_PREFIX + "Kick.Exempt";
-    public static final String KICK = PUNISHMENTS_PREFIX + "Kick.Message";
-    public static final String KICK_INVALID_USAGE = PUNISHMENTS_PREFIX + "Kick.Usage";
-
     public static final String BAN_ALERT = PUNISHMENTS_PREFIX + "Ban.Alert";
     public static final String BAN_EXEMPT = PUNISHMENTS_PREFIX + "Ban.Exempt";
     public static final String BAN = PUNISHMENTS_PREFIX + "Ban.Message";
@@ -47,9 +42,7 @@ public class Messages {
     public static final String MUTE_EXEMPT = PUNISHMENTS_PREFIX + "Mute.Exempt";
     public static final String MUTE = PUNISHMENTS_PREFIX + "Mute.Message";
     public static final String MUTE_INVALID_USAGE = PUNISHMENTS_PREFIX + "Mute.Usage";
-    public static final String MUTE_JOIN_MESSAGE = PUNISHMENTS_PREFIX + "Mute.Chat";
-
-    public static final String LOOKUP_INVALID_USAGE = PUNISHMENTS_PREFIX + "Lookup.Usage";
+    public static final String MUTE_CHAT_MESSAGE = PUNISHMENTS_PREFIX + "Mute.Chat";
 
     public static String get(String message) {
         return getMessages().getString(message);

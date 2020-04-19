@@ -18,11 +18,14 @@ import codes.benh.velocitymc.commands.LobbyCommand;
 import codes.benh.velocitymc.commands.ReportCommand;
 import codes.benh.velocitymc.commands.StaffChatCommand;
 import codes.benh.velocitymc.commands.punishments.BanCommand;
+import codes.benh.velocitymc.commands.punishments.MuteCommand;
 import codes.benh.velocitymc.discord.base.CommandHandler;
+import codes.benh.velocitymc.discord.runnables.ActivityRunnable;
 import codes.benh.velocitymc.helpers.DbHelper;
 import codes.benh.velocitymc.listeners.JoinListener;
-import codes.benh.velocitymc.listeners.LoginListener;
 import codes.benh.velocitymc.listeners.StaffChatListener;
+import codes.benh.velocitymc.listeners.punishments.PlayerBannedListener;
+import codes.benh.velocitymc.listeners.punishments.PlayerMutedListener;
 import codes.benh.velocitymc.runnables.BanCheckRunnable;
 import codes.benh.velocitymc.runnables.TpsRunnable;
 import codes.benh.velocitymc.utils.Messages;
@@ -124,6 +127,7 @@ public class Main extends Plugin {
         pluginManager.registerCommand(this, new BanCommand());
         pluginManager.registerCommand(this, new BungeeStatsCommand());
         pluginManager.registerCommand(this, new LobbyCommand());
+        pluginManager.registerCommand(this, new MuteCommand());
         pluginManager.registerCommand(this, new ReportCommand());
         pluginManager.registerCommand(this, new StaffChatCommand());
     }
@@ -131,12 +135,16 @@ public class Main extends Plugin {
     private void registerListeners(PluginManager pluginManager) {
         pluginManager.registerListener(this, new StaffChatListener());
         pluginManager.registerListener(this, new JoinListener());
-        pluginManager.registerListener(this, new LoginListener());
+        pluginManager.registerListener(this, new PlayerBannedListener());
+        pluginManager.registerListener(this, new PlayerMutedListener());
     }
 
     private void registerSchedulers(TaskScheduler taskScheduler) {
         taskScheduler.schedule(this, new TpsRunnable(), 1000, 50, TimeUnit.MILLISECONDS);
         taskScheduler.schedule(this, new BanCheckRunnable(), 1000, 30000, TimeUnit.MILLISECONDS);
+        if (getConfig().getBoolean("Discord.Enabled")) {
+            taskScheduler.schedule(this, new ActivityRunnable(), 1000, 10000, TimeUnit.MILLISECONDS);
+        }
     }
 
     /**

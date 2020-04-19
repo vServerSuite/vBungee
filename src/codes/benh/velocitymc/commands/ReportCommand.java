@@ -2,12 +2,12 @@ package codes.benh.velocitymc.commands;
 
 import java.util.ArrayList;
 
-import codes.benh.velocitymc.Main;
 import codes.benh.velocitymc.base.BaseCommand;
 import codes.benh.velocitymc.utils.Messages;
 import codes.benh.velocitymc.utils.Permissions;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -47,7 +47,8 @@ public class ReportCommand extends BaseCommand implements TabExecutor {
                                 .replaceAll("%reported%", target.getName())
                                 .replaceAll("%reason%", String.join(" &e", args).trim()));
 
-                        TextComponent textComponent = new TextComponent(reportMessage);
+                        BaseComponent[] component = TextComponent.fromLegacyText(reportMessage);
+                        TextComponent textComponent = new TextComponent(component);
                         textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(
                                 translateColorCodes(Messages.get(Messages.REPORT_FORMAT_HOVER)
                                         .replaceAll("%server%", target.getServer().getInfo().getName()))

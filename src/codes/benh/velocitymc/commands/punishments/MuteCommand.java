@@ -12,20 +12,19 @@ import codes.benh.velocitymc.utils.Messages;
 import codes.benh.velocitymc.utils.Permissions;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-public class BanCommand extends BaseCommand {
+public class MuteCommand extends BaseCommand {
 
-    public BanCommand() {
-        super("ban", null, "tempban", "banplayer", "temporaryban");
+    public MuteCommand() {
+        super("mute", null, "tempmute", "muteplayer", "temporarymute");
     }
 
     @Override
     public void execute(CommandSender commandSender, String[] args) {
-        if (commandSender.hasPermission(Permissions.BAN) || commandSender.hasPermission(Permissions.BAN_TEMPORARY)) {
+        if (commandSender.hasPermission(Permissions.BAN) || commandSender.hasPermission(Permissions.MUTE_TEMPORARY)) {
             if (args.length < 2) {
-                sendMessage(commandSender, Messages.get(Messages.BAN_INVALID_USAGE), true);
+                sendMessage(commandSender, Messages.get(Messages.MUTE_INVALID_USAGE), true);
             }
             else {
                 long expiresCheck = -1;
@@ -37,10 +36,10 @@ public class BanCommand extends BaseCommand {
                 }
 
                 if (expiresCheck != -1 && args.length == 2) {
-                    sendMessage(commandSender, Messages.get(Messages.BAN_INVALID_USAGE), true);
+                    sendMessage(commandSender, Messages.get(Messages.MUTE_INVALID_USAGE), true);
                 }
                 else {
-                    if (expiresCheck == -1 && !commandSender.hasPermission(Permissions.BAN)) {
+                    if (expiresCheck == -1 && !commandSender.hasPermission(Permissions.MUTE)) {
                         sendMessage(commandSender, "You do not have access to that command", true);
                     }
                     else {
@@ -51,33 +50,33 @@ public class BanCommand extends BaseCommand {
                             args[1] = "";
                         }
                         String reason = String.join(" ", args).trim();
-                        String banMessage = Messages.get(Messages.BAN)
+                        String muteMessage = Messages.get(Messages.MUTE)
                                 .replaceAll("%reason%", reason)
                                 .replaceAll("%staff%", commandSender.getName())
                                 .replaceAll("%expiry_date%", expiresCheck == -1 ? "never" : new SimpleDateFormat("dd-MM-yyyy '&7@&e' HH:mm:ss").format(new Date(expiresCheck)));
 
                         if (player != null && player.exists()) {
                             long finalExpiresCheck = expiresCheck;
-                            player.hasPermission(Permissions.BAN_EXEMPT)
+                            player.hasPermission(Permissions.MUTE_EXEMPT)
                                     .thenAcceptAsync(result -> {
                                         if (result) {
-                                            sendMessage(commandSender, Messages.get(Messages.BAN_EXEMPT).replaceAll("%player%", player.getUsername()), true);
+                                            sendMessage(commandSender, Messages.get(Messages.MUTE_EXEMPT).replaceAll("%player%", player.getUsername()), true);
                                         }
                                         else {
                                             if (proxiedPlayer != null) {
-                                                proxiedPlayer.disconnect(new TextComponent(translateColorCodes(banMessage)));
+                                                sendMessage(proxiedPlayer, muteMessage, true);
                                             }
-                                            String newBanId = player.logPunishment(PunishmentType.BAN, commandSender, reason, finalExpiresCheck);
+                                            String newMuteId = player.logPunishment(PunishmentType.MUTE, commandSender, reason, finalExpiresCheck);
 
-                                            DiscordUtils.logPunishment(PunishmentType.BAN, newBanId, player, commandSender instanceof ProxiedPlayer ? Player.get(commandSender) : commandSender, reason, finalExpiresCheck);
+                                            DiscordUtils.logPunishment(PunishmentType.MUTE, newMuteId, player, commandSender instanceof ProxiedPlayer ? Player.get(commandSender) : commandSender, reason, finalExpiresCheck);
                                             ProxyServer.getInstance().getPlayers().forEach(p -> {
-                                                if (p.hasPermission(Permissions.BAN_RECEIVE)) {
-                                                    String banAlert = Messages.get(Messages.BAN_ALERT)
+                                                if (p.hasPermission(Permissions.MUTE_RECEIVE)) {
+                                                    String muteAlert = Messages.get(Messages.MUTE_ALERT)
                                                             .replaceAll("%staff%", commandSender.getName())
                                                             .replaceAll("%player%", player.getUsername())
                                                             .replaceAll("%reason%", reason)
                                                             .replaceAll("%expiry_date%", finalExpiresCheck == -1 ? "never" : new SimpleDateFormat("dd-MM-yyyy '&7@&e' HH:mm:ss").format(new Date(finalExpiresCheck)));
-                                                    sendMessage(p, banAlert, true);
+                                                    sendMessage(p, muteAlert, true);
                                                 }
                                             });
                                         }

@@ -12,11 +12,6 @@ Server:
   Connect: 'Connecting you to &e%server%&7.'
   NotFound: 'We could not find a server called &e%server%&7.'
 Punishments:
-  Kick:
-    Alert: '&e%player%&7 has been kicked by &e%staff%&7 with the reason &e%reason%&7.'
-    Exempt: '&e%player%&7 is exempt from being kicked.'
-    Message: '&7You have been kicked by &e%staff%&7 for &e%reason%&7.'
-    Usage: 'Invalid Usage. Please type &e/kick <player> <reason>&7.'
   Ban:
     Alert: '&e%player%&7 has been banned by &e%staff%&7 for &e%reason%&7 (Expires &e%expiry_date%&7).'
     Exempt: '&e%player%&7 is exempt from being banned.'
@@ -28,7 +23,7 @@ Punishments:
       - '&7You are currently &e&nsuspended&7 from the network for &e%reason%&7.'
       - '&7Your ban expires &e%expiry_date%&7.'
       - '&7You can appeal at &ehttps://example.com/appeal'
-      - '&7Your ban Id is &e&o#%id%&7.'
+      - '&7Your ban Id is &e&o%id%&7.'
       - ''
       - '&7&m-*----------------------------------------*--'
   Mute:
@@ -36,6 +31,4 @@ Punishments:
     Exempt: '&e%player%&7 is exempt from being muted.'
     Message: '&7You have been muted by &e%staff%&7 for &e%reason%&7. Your mute expires &e%expiry_date%&7.'
     Usage: 'Invalid Usage. Please type &e/mute <player> [time] <reason>&7.'
-    Chat: 'You are currently &e&nmuted&7 for &e%reason%&7. Your mute expires &e%expiry_date%&7. ID: &e&o#%id%&7.'
-  Lookup:
-    Usage: 'Invalid Usage. Please type &e/lookup <player>'
+    Chat: 'You are currently muted for &e%reason%&7. Your mute will expire on &e%expiry_date%&7. (Mute Id: &e%id%&7)'

@@ -16,4 +16,9 @@ public class Permissions {
     public static final String BAN_TEMPORARY = BAN + "temporary";
     public static final String BAN_EXEMPT = BAN + ".exempt";
     public static final String BAN_RECEIVE = BAN + ".receive";
+
+    public static final String MUTE = PREFIX + "mute";
+    public static final String MUTE_TEMPORARY = MUTE + "temporary";
+    public static final String MUTE_EXEMPT = MUTE + ".exempt";
+    public static final String MUTE_RECEIVE = MUTE + ".receive";
 }

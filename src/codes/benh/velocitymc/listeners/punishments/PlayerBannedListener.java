@@ -1,4 +1,4 @@
-package codes.benh.velocitymc.listeners;
+package codes.benh.velocitymc.listeners.punishments;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import net.md_5.bungee.api.event.LoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
-public class LoginListener extends BaseListener implements Listener {
+public class PlayerBannedListener extends BaseListener implements Listener {
 
     @EventHandler
     public void onLogin(LoginEvent e) {
@@ -33,8 +33,8 @@ public class LoginListener extends BaseListener implements Listener {
                         .replaceAll("%reason%", ban.getReason())
                         .replaceAll("%id%", String.valueOf(ban.getId()))));
 
-                e.setCancelled(true);
                 e.setCancelReason(new ComponentBuilder(String.join("\n", convertedBanLines)).create());
+                e.setCancelled(true);
             }
             catch (NullPointerException ex) {
                 ex.printStackTrace();

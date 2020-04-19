@@ -5,6 +5,7 @@ import codes.benh.velocitymc.models.Player;
 import codes.benh.velocitymc.utils.Messages;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.plugin.Command;
 
@@ -24,13 +25,13 @@ public abstract class BaseCommand extends Command {
     }
 
     protected void sendMessage(Player player, String message, boolean prefixUsed) {
-        TextComponent textComponent = new TextComponent(prefixUsed ? getPrefix() + translateColorCodes(message) : translateColorCodes(message));
-        player.getProxiedPlayer().sendMessage(textComponent);
+        BaseComponent[] component = TextComponent.fromLegacyText(prefixUsed ? getPrefix() + translateColorCodes(message) : translateColorCodes(message));
+        player.getProxiedPlayer().sendMessage(component);
     }
 
     protected void sendMessage(CommandSender player, String message, boolean prefixUsed) {
-        TextComponent textComponent = new TextComponent(prefixUsed ? getPrefix() + translateColorCodes(message) : translateColorCodes(message));
-        player.sendMessage(textComponent);
+        BaseComponent[] component = TextComponent.fromLegacyText(prefixUsed ? getPrefix() + translateColorCodes(message) : translateColorCodes(message));
+        player.sendMessage(component);
     }
 
     protected void sendMessage(CommandSender player, TextComponent message) {

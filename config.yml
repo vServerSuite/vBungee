@@ -15,4 +15,7 @@ Discord:
   Ids:
     Guild: '700059392770441216'
     Punishments: '701014077266198581'
+  RoleSync:
+    #RankName: 'discordRoleId'
+    vSuiteDev: '700059631430664253'
   Token: 'NzAxMDEyNTYwMTI3ODUyNTc1.XprS3A.51maPJOgaIdEMiu-n7Fyn2jqavM'

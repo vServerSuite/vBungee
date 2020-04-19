@@ -8,8 +8,10 @@ public class BanCheckRunnable implements Runnable {
     @Override
     public void run() {
         try {
-            Main.getMySQL().update("UPDATE Punishments SET punishment_is_active=0 " +
-                    "WHERE punishment_end_date <= '" + System.currentTimeMillis() + "' AND punishment_end_date <> '0'");
+            if(Main.getMySQL() != null && !Main.getMySQL().getConnection().isClosed()) {
+                Main.getMySQL().update("UPDATE Punishments SET punishment_is_active=0 " +
+                        "WHERE punishment_end_date <= '" + System.currentTimeMillis() + "' AND punishment_end_date <> '0'");
+            }
         }
         catch (SQLException e) {
             e.printStackTrace();
