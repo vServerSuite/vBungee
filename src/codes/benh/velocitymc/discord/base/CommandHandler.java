@@ -6,6 +6,7 @@ import java.util.Map;
 import codes.benh.velocitymc.Main;
 import codes.benh.velocitymc.discord.commands.AddProofCommand;
 import codes.benh.velocitymc.discord.commands.HelpCommand;
+import codes.benh.velocitymc.discord.commands.LinkCommand;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -15,6 +16,7 @@ public class CommandHandler extends ListenerAdapter {
 
     public CommandHandler() {
         commandList.put("addproof", new AddProofCommand());
+        commandList.put("link", new LinkCommand());
         commandList.put("help", new HelpCommand(commandList.values()));
     }
 

@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import codes.benh.velocitymc.commands.BungeeStatsCommand;
@@ -20,21 +21,26 @@ import codes.benh.velocitymc.commands.StaffChatCommand;
 import codes.benh.velocitymc.commands.punishments.BanCommand;
 import codes.benh.velocitymc.commands.punishments.MuteCommand;
 import codes.benh.velocitymc.discord.base.CommandHandler;
+import codes.benh.velocitymc.discord.listeners.VerificationListener;
 import codes.benh.velocitymc.discord.runnables.ActivityRunnable;
 import codes.benh.velocitymc.helpers.DbHelper;
 import codes.benh.velocitymc.listeners.JoinListener;
 import codes.benh.velocitymc.listeners.StaffChatListener;
 import codes.benh.velocitymc.listeners.punishments.PlayerBannedListener;
 import codes.benh.velocitymc.listeners.punishments.PlayerMutedListener;
+import codes.benh.velocitymc.models.Player;
 import codes.benh.velocitymc.runnables.BanCheckRunnable;
 import codes.benh.velocitymc.runnables.TpsRunnable;
+import codes.benh.velocitymc.utils.APIUtils;
 import codes.benh.velocitymc.utils.Messages;
+import codes.benh.velocitymc.utils.Permissions;
 import com.google.common.io.ByteStreams;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
@@ -99,13 +105,18 @@ public class Main extends Plugin {
             try {
                 jda = JDABuilder.create(getConfig().getString("Discord.Token"), Arrays.asList(GatewayIntent.values())).build();
                 jda.addEventListener(new CommandHandler());
+                jda.addEventListener(new VerificationListener());
                 jda.setAutoReconnect(true);
             }
             catch (Exception ex) {
                 ex.printStackTrace();
             }
         }
+
+        APIUtils.setupAPI();
     }
+
+
 
     private void parseLogDeletion() {
         System.out.println("vSuite > Clearing up /logs/");

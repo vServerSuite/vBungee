@@ -29,7 +29,7 @@ public class Messages {
 
     public static final String SERVER_NOT_FOUND = "Server.NotFound";
     public static final String SERVER_CONNECT = "Server.Connect";
-    
+
     public static final String PUNISHMENTS_PREFIX = "Punishments.";
 
     public static final String BAN_ALERT = PUNISHMENTS_PREFIX + "Ban.Alert";
@@ -43,6 +43,10 @@ public class Messages {
     public static final String MUTE = PUNISHMENTS_PREFIX + "Mute.Message";
     public static final String MUTE_INVALID_USAGE = PUNISHMENTS_PREFIX + "Mute.Usage";
     public static final String MUTE_CHAT_MESSAGE = PUNISHMENTS_PREFIX + "Mute.Chat";
+
+    public static final String DISCORD_LINK_NOTIFICATION = "Discord.Link.Notification";
+    public static final String DISCORD_LINK_CONFIRMATION = "Discord.Link.Confirmation";
+
 
     public static String get(String message) {
         return getMessages().getString(message);

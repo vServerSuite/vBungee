@@ -39,6 +39,17 @@ public class DbHelper {
                     System.out.println("vSuite > Initialising table: Punishments");
                 }
             });
+            sql.query("SHOW TABLES LIKE 'DiscordVerificationTokens'", resultSet -> {
+                if (resultSet == null || !resultSet.next()) {
+                    sql.update("CREATE TABLE `DiscordVerificationTokens` (" +
+                            "`verification_token` VARCHAR(5) NOT NULL, " +
+                            "`verification_uuid` VARCHAR(36) NOT NULL, " +
+                            "`verification_date` BIGINT NOT NULL, " +
+                            "UNIQUE KEY `Token` (`verification_token`) USING BTREE, " +
+                            "PRIMARY KEY (`verification_token`));");
+                    System.out.println("vSuite > Initialising table: Discord Verification Tokens");
+                }
+            });
             System.out.println("vSuite > Database Initialisation Complete");
         }
         catch (Exception ex) {

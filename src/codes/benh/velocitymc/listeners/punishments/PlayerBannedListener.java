@@ -9,7 +9,9 @@ import codes.benh.velocitymc.base.BaseListener;
 import codes.benh.velocitymc.models.Player;
 import codes.benh.velocitymc.models.punishments.Punishment;
 import codes.benh.velocitymc.utils.Messages;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.event.LoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
@@ -32,8 +34,8 @@ public class PlayerBannedListener extends BaseListener implements Listener {
                         .replaceAll("%expiry_date%", ban.getDateEnded() == 0 ? "never" : new SimpleDateFormat("dd-MM-yyyy '&7@&e' HH:mm").format(ban.getDateEnded()))
                         .replaceAll("%reason%", ban.getReason())
                         .replaceAll("%id%", String.valueOf(ban.getId()))));
-
-                e.setCancelReason(new ComponentBuilder(String.join("\n", convertedBanLines)).create());
+                BaseComponent[] message = TextComponent.fromLegacyText(String.join("\n", convertedBanLines));
+                e.setCancelReason(message);
                 e.setCancelled(true);
             }
             catch (NullPointerException ex) {

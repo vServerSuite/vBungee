@@ -32,3 +32,7 @@ Punishments:
     Message: '&7You have been muted by &e%staff%&7 for &e%reason%&7. Your mute expires &e%expiry_date%&7.'
     Usage: 'Invalid Usage. Please type &e/mute <player> [time] <reason>&7.'
     Chat: 'You are currently muted for &e%reason%&7. Your mute will expire on &e%expiry_date%&7. (Mute Id: &e%id%&7)'
+Discord:
+  Link:
+    Notification: 'Someone has requested to verify your account. If this was you, please message vBungee#7026 with the message: &everification %token%&7.'
+    Confirmation: 'Thank you for linking your discord account with the username &e%discord_username%&7. If you need to re-link your account, please use &e/syncranks&7.'

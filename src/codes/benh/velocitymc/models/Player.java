@@ -116,7 +116,7 @@ public class Player {
                         punishment.setType(PunishmentType.valueOf(resultSet.getString("punishment_type")));
                         punishment.setPlayer(PlayerUtils.getUsernameFromUUID(uuid));
                         punishment.setDateIssued(resultSet.getLong("punishment_issue_date"));
-                        punishment.setStaff(PlayerUtils.getUsernameFromUUID(UUID.fromString(resultSet.getString("punishment_staff"))));
+                        punishment.setStaff(Objects.equals(resultSet.getString("punishment_staff"), "CONSOLE") ? "CONSOLE" : PlayerUtils.getUsernameFromUUID(UUID.fromString(resultSet.getString("punishment_staff"))));
                         punishment.setReason(resultSet.getString("punishment_reason"));
                         punishment.setTemporary(resultSet.getBoolean("punishment_temporary"));
                         punishment.setDateEnded(resultSet.getLong("punishment_end_date"));
@@ -216,9 +216,23 @@ public class Player {
 
     public String logPunishment(PunishmentType type, CommandSender staffMember, String reason, long expiryDate) {
         String punishmentId = getUniqueId();
-        System.out.println(punishmentId);
         String staffUuid = (staffMember instanceof ProxiedPlayer) ? ((ProxiedPlayer) staffMember).getUniqueId().toString() : "CONSOLE";
 
+        try {
+            Main.getMySQL().update("INSERT INTO " +
+                    "`Punishments` (`punishment_id`, `punishment_type`, `punishment_uuid`, `punishment_issue_date`, `punishment_staff`, `punishment_reason`, `punishment_temporary`, `punishment_end_date`) " +
+                    "VALUES ('" + punishmentId + "', '" + type + "', '" + uuid + "', '" + System.currentTimeMillis() + "', '" + staffUuid + "', '" + reason + "', '" + (expiryDate == -1 ? 0 : 1) + "', '" + (expiryDate == -1 ? 0 : expiryDate) + "')");
+            return punishmentId;
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public String logPunishment(PunishmentType type, String staffMember, String reason, long expiryDate) {
+        String punishmentId = getUniqueId();
+        String staffUuid = staffMember.equals("CONSOLE") ? "CONSOLE" : Objects.requireNonNull(PlayerUtils.getUUIDFromUsername(staffMember)).toString();
         try {
             Main.getMySQL().update("INSERT INTO " +
                     "`Punishments` (`punishment_id`, `punishment_type`, `punishment_uuid`, `punishment_issue_date`, `punishment_staff`, `punishment_reason`, `punishment_temporary`, `punishment_end_date`) " +
@@ -292,8 +306,6 @@ public class Player {
             return null;
         }
     }
-
-    ;
 
     private String generateId() {
         final String ALPHA_NUMERIC_STRING = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

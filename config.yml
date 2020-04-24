@@ -12,10 +12,14 @@ Discord:
   Prefix: 'v!'
   Permissions:
     AddProof: 'vSuite Developers'
+    Link: 'everyone'
   Ids:
     Guild: '700059392770441216'
     Punishments: '701014077266198581'
+    Verified: '701553710383366234'
   RoleSync:
-    #RankName: 'discordRoleId'
     vSuiteDev: '700059631430664253'
   Token: ''
+WebAPI:
+  Port: 6544
+  Secret: ''

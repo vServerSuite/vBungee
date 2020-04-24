@@ -25,8 +25,6 @@ public class HelpCommand extends BaseCommand {
             }
         }
 
-        helpMessages.append("**").append(Main.getInstance().getConfig().getString("Discord.Prefix")).append("help** - Opens this menu");
-
         event.getChannel().sendMessage(generateEmbed(event.getChannel(), helpMessages.toString(), Color.CYAN).build()).queue();
         event.getMessage().delete().queue();
     }
