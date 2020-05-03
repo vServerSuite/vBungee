@@ -1,10 +1,10 @@
-package codes.benh.velocitymc.discord.commands;
+package dev.vsuite.bungee.discord.commands;
 
 import java.awt.*;
 
-import codes.benh.velocitymc.Main;
-import codes.benh.velocitymc.discord.base.BaseCommand;
-import codes.benh.velocitymc.models.punishments.Punishment;
+import dev.vsuite.bungee.Main;
+import dev.vsuite.bungee.discord.base.BaseCommand;
+import dev.vsuite.bungee.models.punishments.Punishment;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 

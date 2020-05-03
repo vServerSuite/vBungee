@@ -1,18 +1,18 @@
-package codes.benh.velocitymc.api;
+package dev.vsuite.bungee.api;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 
-import codes.benh.velocitymc.Main;
-import codes.benh.velocitymc.api.responses.PunishmentApiResponse;
-import codes.benh.velocitymc.api.responses.base.BaseApiResponse;
-import codes.benh.velocitymc.models.Player;
-import codes.benh.velocitymc.models.punishments.PunishmentType;
-import codes.benh.velocitymc.utils.DiscordUtils;
-import codes.benh.velocitymc.utils.Messages;
-import codes.benh.velocitymc.utils.Permissions;
+import dev.vsuite.bungee.Main;
+import dev.vsuite.bungee.api.responses.PunishmentApiResponse;
+import dev.vsuite.bungee.api.responses.base.BaseApiResponse;
+import dev.vsuite.bungee.models.Player;
+import dev.vsuite.bungee.models.punishments.PunishmentType;
+import dev.vsuite.bungee.utils.DiscordUtils;
+import dev.vsuite.bungee.utils.Messages;
+import dev.vsuite.bungee.utils.Permissions;
 import io.javalin.Javalin;
 import io.javalin.core.JavalinConfig;
 import io.javalin.http.Context;

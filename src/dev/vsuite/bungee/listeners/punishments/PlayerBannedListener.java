@@ -1,16 +1,15 @@
-package codes.benh.velocitymc.listeners.punishments;
+package dev.vsuite.bungee.listeners.punishments;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import codes.benh.velocitymc.Main;
-import codes.benh.velocitymc.base.BaseListener;
-import codes.benh.velocitymc.models.Player;
-import codes.benh.velocitymc.models.punishments.Punishment;
-import codes.benh.velocitymc.utils.Messages;
+import dev.vsuite.bungee.Main;
+import dev.vsuite.bungee.base.BaseListener;
+import dev.vsuite.bungee.models.Player;
+import dev.vsuite.bungee.models.punishments.Punishment;
+import dev.vsuite.bungee.utils.Messages;
 import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.event.LoginEvent;
 import net.md_5.bungee.api.plugin.Listener;

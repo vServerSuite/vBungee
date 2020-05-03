@@ -1,11 +1,11 @@
-package codes.benh.velocitymc.discord.commands;
+package dev.vsuite.bungee.discord.commands;
 
 import java.awt.*;
 
-import codes.benh.velocitymc.Main;
-import codes.benh.velocitymc.discord.base.BaseCommand;
-import codes.benh.velocitymc.utils.DiscordUtils;
-import codes.benh.velocitymc.utils.Messages;
+import dev.vsuite.bungee.Main;
+import dev.vsuite.bungee.discord.base.BaseCommand;
+import dev.vsuite.bungee.utils.DiscordUtils;
+import dev.vsuite.bungee.utils.Messages;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;

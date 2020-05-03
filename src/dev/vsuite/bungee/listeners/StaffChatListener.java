@@ -1,10 +1,10 @@
-package codes.benh.velocitymc.listeners;
+package dev.vsuite.bungee.listeners;
 
-import codes.benh.velocitymc.Main;
-import codes.benh.velocitymc.base.BaseListener;
-import codes.benh.velocitymc.models.Player;
-import codes.benh.velocitymc.utils.Messages;
-import codes.benh.velocitymc.utils.Permissions;
+import dev.vsuite.bungee.Main;
+import dev.vsuite.bungee.base.BaseListener;
+import dev.vsuite.bungee.models.Player;
+import dev.vsuite.bungee.utils.Messages;
+import dev.vsuite.bungee.utils.Permissions;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.ChatEvent;
 import net.md_5.bungee.api.plugin.Listener;

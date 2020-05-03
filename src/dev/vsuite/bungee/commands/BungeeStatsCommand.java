@@ -1,12 +1,12 @@
-package codes.benh.velocitymc.commands;
+package dev.vsuite.bungee.commands;
 
 import java.lang.management.ManagementFactory;
 import java.text.NumberFormat;
 
-import codes.benh.velocitymc.base.BaseCommand;
-import codes.benh.velocitymc.runnables.TpsRunnable;
-import codes.benh.velocitymc.utils.DateUtil;
-import codes.benh.velocitymc.utils.Permissions;
+import dev.vsuite.bungee.base.BaseCommand;
+import dev.vsuite.bungee.runnables.TpsRunnable;
+import dev.vsuite.bungee.utils.DateUtil;
+import dev.vsuite.bungee.utils.Permissions;
 import net.md_5.bungee.api.CommandSender;
 
 public class BungeeStatsCommand extends BaseCommand {

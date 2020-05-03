@@ -1,6 +1,6 @@
-package codes.benh.velocitymc.helpers;
+package dev.vsuite.bungee.helpers;
 
-import codes.benh.velocitymc.Main;
+import dev.vsuite.bungee.Main;
 import pro.husk.mysql.MySQL;
 
 public class DbHelper {

@@ -1,9 +1,9 @@
-package codes.benh.velocitymc.api.responses;
+package dev.vsuite.bungee.api.responses;
 
 import javax.annotation.Nullable;
 
-import codes.benh.velocitymc.api.responses.base.BaseApiResponse;
-import codes.benh.velocitymc.models.punishments.PunishmentType;
+import dev.vsuite.bungee.api.responses.base.BaseApiResponse;
+import dev.vsuite.bungee.models.punishments.PunishmentType;
 
 public class PunishmentApiResponse extends BaseApiResponse {
 

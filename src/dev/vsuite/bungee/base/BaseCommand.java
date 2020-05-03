@@ -1,8 +1,7 @@
-package codes.benh.velocitymc.base;
+package dev.vsuite.bungee.base;
 
-import codes.benh.velocitymc.Main;
-import codes.benh.velocitymc.models.Player;
-import codes.benh.velocitymc.utils.Messages;
+import dev.vsuite.bungee.models.Player;
+import dev.vsuite.bungee.utils.Messages;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.BaseComponent;

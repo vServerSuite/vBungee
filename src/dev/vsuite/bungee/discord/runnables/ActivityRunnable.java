@@ -1,6 +1,6 @@
-package codes.benh.velocitymc.discord.runnables;
+package dev.vsuite.bungee.discord.runnables;
 
-import codes.benh.velocitymc.Main;
+import dev.vsuite.bungee.Main;
 import net.dv8tion.jda.api.entities.Activity;
 import net.md_5.bungee.api.ProxyServer;
 

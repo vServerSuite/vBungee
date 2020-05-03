@@ -1,10 +1,10 @@
-package codes.benh.velocitymc.discord.commands;
+package dev.vsuite.bungee.discord.commands;
 
 import java.awt.*;
 import java.util.Collection;
 
-import codes.benh.velocitymc.Main;
-import codes.benh.velocitymc.discord.base.BaseCommand;
+import dev.vsuite.bungee.Main;
+import dev.vsuite.bungee.discord.base.BaseCommand;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 public class HelpCommand extends BaseCommand {

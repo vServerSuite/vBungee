@@ -1,4 +1,4 @@
-package codes.benh.velocitymc.api.responses.base;
+package dev.vsuite.bungee.api.responses.base;
 
 public class BaseApiResponse {
 

@@ -1,12 +1,12 @@
-package codes.benh.velocitymc.commands;
+package dev.vsuite.bungee.commands;
 
 import java.util.List;
 import java.util.Random;
 
-import codes.benh.velocitymc.Main;
-import codes.benh.velocitymc.base.BaseCommand;
-import codes.benh.velocitymc.utils.Messages;
-import codes.benh.velocitymc.utils.Permissions;
+import dev.vsuite.bungee.Main;
+import dev.vsuite.bungee.base.BaseCommand;
+import dev.vsuite.bungee.utils.Messages;
+import dev.vsuite.bungee.utils.Permissions;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;

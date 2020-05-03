@@ -1,13 +1,13 @@
-package codes.benh.velocitymc.discord.base;
+package dev.vsuite.bungee.discord.base;
 
 import java.awt.*;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import codes.benh.velocitymc.Main;
-import codes.benh.velocitymc.models.Player;
-import codes.benh.velocitymc.utils.Messages;
+import dev.vsuite.bungee.Main;
+import dev.vsuite.bungee.models.Player;
+import dev.vsuite.bungee.utils.Messages;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Guild;

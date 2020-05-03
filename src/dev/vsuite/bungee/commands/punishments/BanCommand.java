@@ -1,15 +1,15 @@
-package codes.benh.velocitymc.commands.punishments;
+package dev.vsuite.bungee.commands.punishments;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import codes.benh.velocitymc.base.BaseCommand;
-import codes.benh.velocitymc.models.Player;
-import codes.benh.velocitymc.models.punishments.PunishmentType;
-import codes.benh.velocitymc.utils.DateUtil;
-import codes.benh.velocitymc.utils.DiscordUtils;
-import codes.benh.velocitymc.utils.Messages;
-import codes.benh.velocitymc.utils.Permissions;
+import dev.vsuite.bungee.base.BaseCommand;
+import dev.vsuite.bungee.models.Player;
+import dev.vsuite.bungee.models.punishments.PunishmentType;
+import dev.vsuite.bungee.utils.DateUtil;
+import dev.vsuite.bungee.utils.DiscordUtils;
+import dev.vsuite.bungee.utils.Messages;
+import dev.vsuite.bungee.utils.Permissions;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;

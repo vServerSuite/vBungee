@@ -1,14 +1,14 @@
-package codes.benh.velocitymc.discord.listeners;
+package dev.vsuite.bungee.discord.listeners;
 
 import java.awt.*;
 import java.util.Collection;
 
-import codes.benh.velocitymc.Main;
-import codes.benh.velocitymc.discord.base.BaseListener;
-import codes.benh.velocitymc.discord.models.VerificationToken;
-import codes.benh.velocitymc.models.Player;
-import codes.benh.velocitymc.utils.Messages;
-import codes.benh.velocitymc.utils.PlayerUtils;
+import dev.vsuite.bungee.Main;
+import dev.vsuite.bungee.discord.base.BaseListener;
+import dev.vsuite.bungee.discord.models.VerificationToken;
+import dev.vsuite.bungee.models.Player;
+import dev.vsuite.bungee.utils.Messages;
+import dev.vsuite.bungee.utils.PlayerUtils;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;

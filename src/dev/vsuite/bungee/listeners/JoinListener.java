@@ -1,10 +1,10 @@
-package codes.benh.velocitymc.listeners;
+package dev.vsuite.bungee.listeners;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import codes.benh.velocitymc.base.BaseListener;
-import codes.benh.velocitymc.models.Player;
+import dev.vsuite.bungee.base.BaseListener;
+import dev.vsuite.bungee.models.Player;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;

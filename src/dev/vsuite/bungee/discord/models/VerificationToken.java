@@ -1,9 +1,9 @@
-package codes.benh.velocitymc.discord.models;
+package dev.vsuite.bungee.discord.models;
 
 import java.sql.SQLException;
 import java.util.UUID;
 
-import codes.benh.velocitymc.Main;
+import dev.vsuite.bungee.Main;
 
 public class VerificationToken {
     private String token;

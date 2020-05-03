@@ -1,12 +1,12 @@
-package codes.benh.velocitymc.discord.base;
+package dev.vsuite.bungee.discord.base;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import codes.benh.velocitymc.Main;
-import codes.benh.velocitymc.discord.commands.AddProofCommand;
-import codes.benh.velocitymc.discord.commands.HelpCommand;
-import codes.benh.velocitymc.discord.commands.LinkCommand;
+import dev.vsuite.bungee.Main;
+import dev.vsuite.bungee.discord.commands.AddProofCommand;
+import dev.vsuite.bungee.discord.commands.HelpCommand;
+import dev.vsuite.bungee.discord.commands.LinkCommand;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
