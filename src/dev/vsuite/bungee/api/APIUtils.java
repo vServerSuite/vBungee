@@ -1,6 +1,7 @@
 package dev.vsuite.bungee.api;
 
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
@@ -21,9 +22,13 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import org.apache.commons.lang3.RandomStringUtils;
 
 public class APIUtils {
     public static void setupAPI() {
+        if (Main.getInstance().getConfig().getString("WebAPI.Secret").equals("")) {
+            Main.getInstance().getConfig().set("WebAPI.Secret", Base64.getEncoder().encodeToString(RandomStringUtils.random(100).getBytes()));
+        }
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(Main.class.getClassLoader());
         Javalin app = Javalin.create(JavalinConfig::enableCorsForAllOrigins).start(Main.getInstance().getConfig().getInt("WebAPI.Port"));

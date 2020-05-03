@@ -63,6 +63,20 @@ public class DbHelper {
                     }
                 });
             }
+            sql.query("SHOW TABLES LIKE 'Logs'", resultSet -> {
+                if (resultSet == null || !resultSet.next()) {
+                    sql.update("CREATE TABLE `Logs` (" +
+                            "`log_id` INT NOT NULL AUTO_INCREMENT, " +
+                            "`log_type` VARCHAR(50) NOT NULL, " +
+                            "`log_player` VARCHAR(36) NOT NULL, " +
+                            "`log_ip_address` VARCHAR(50) NOT NULL, " +
+                            "`log_datetime` BIGINT NOT NULL, " +
+                            "`log_server` VARCHAR(100) NOT NULL, " +
+                            "`log_message` VARCHAR(200) NOT NULL, " +
+                            "PRIMARY KEY (`log_id`));");
+                    System.out.println("vSuite > Initialising table: Logs");
+                }
+            });
             System.out.println("vSuite > Database Initialisation Complete");
         }
         catch (Exception ex) {

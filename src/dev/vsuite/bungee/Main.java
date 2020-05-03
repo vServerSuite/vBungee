@@ -24,6 +24,7 @@ import dev.vsuite.bungee.discord.listeners.VerificationListener;
 import dev.vsuite.bungee.discord.runnables.ActivityRunnable;
 import dev.vsuite.bungee.helpers.DbHelper;
 import dev.vsuite.bungee.listeners.JoinListener;
+import dev.vsuite.bungee.listeners.LogsListener;
 import dev.vsuite.bungee.listeners.StaffChatListener;
 import dev.vsuite.bungee.listeners.punishments.PlayerBannedListener;
 import dev.vsuite.bungee.listeners.punishments.PlayerMutedListener;
@@ -114,8 +115,6 @@ public class Main extends Plugin {
         }
     }
 
-
-
     private void parseLogDeletion() {
         System.out.println("vSuite > Clearing up /logs/");
         File dirPath = new File("./logs");
@@ -144,6 +143,7 @@ public class Main extends Plugin {
     private void registerListeners(PluginManager pluginManager) {
         pluginManager.registerListener(this, new StaffChatListener());
         pluginManager.registerListener(this, new JoinListener());
+        pluginManager.registerListener(this, new LogsListener());
         pluginManager.registerListener(this, new PlayerBannedListener());
         pluginManager.registerListener(this, new PlayerMutedListener());
     }
