@@ -1,4 +1,4 @@
-package codes.benh.velocitymc.models.punishments;
+package dev.vsuite.bungee.models.punishments;
 
 public enum PunishmentType {
     KICK,

@@ -1,4 +1,4 @@
-package codes.benh.velocitymc.utils;
+package dev.vsuite.bungee.utils;
 
 import java.awt.*;
 import java.sql.ResultSet;
@@ -9,9 +9,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import codes.benh.velocitymc.Main;
-import codes.benh.velocitymc.models.Player;
-import codes.benh.velocitymc.models.punishments.PunishmentType;
+import dev.vsuite.bungee.Main;
+import dev.vsuite.bungee.models.Player;
+import dev.vsuite.bungee.models.punishments.PunishmentType;
 import jdk.internal.jline.internal.Nullable;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;

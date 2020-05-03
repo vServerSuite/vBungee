@@ -1,4 +1,4 @@
-package codes.benh.velocitymc.utils;
+package dev.vsuite.bungee.utils;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;

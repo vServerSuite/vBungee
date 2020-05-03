@@ -1,4 +1,4 @@
-package codes.benh.velocitymc.utils;
+package dev.vsuite.bungee.utils;
 
 public class Permissions {
     private static final String PREFIX = "vSuite.";

@@ -1,6 +1,6 @@
 name: vBungee
 version: 0.0.1
-main: codes.benh.velocitymc.Main
-author: Ben________
-description: VelocityMC BungeeCord
+main: dev.vsuite.bungee.Main
+author: vSuite Team
+description: vSuite BungeeCord
 depends: [LuckPerms]

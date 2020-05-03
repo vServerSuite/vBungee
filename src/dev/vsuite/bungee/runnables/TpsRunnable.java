@@ -1,4 +1,4 @@
-package codes.benh.velocitymc.runnables;
+package dev.vsuite.bungee.runnables;
 
 public class TpsRunnable implements Runnable {
 

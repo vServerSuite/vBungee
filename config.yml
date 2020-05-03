@@ -21,5 +21,6 @@ Discord:
     vSuiteDev: '700059631430664253'
   Token: ''
 WebAPI:
+  Enabled: true
   Port: 6544
   Secret: ''

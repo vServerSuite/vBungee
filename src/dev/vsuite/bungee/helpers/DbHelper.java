@@ -50,6 +50,19 @@ public class DbHelper {
                     System.out.println("vSuite > Initialising table: Discord Verification Tokens");
                 }
             });
+            if(Main.getInstance().getConfig().getBoolean("WebAPI.Enabled")) {
+                sql.query("SHOW TABLES LIKE 'Notifications'", resultSet -> {
+                    if (resultSet == null || !resultSet.next()) {
+                        sql.update("CREATE TABLE `Notifications` (" +
+                                "`notification_id` VARCHAR(36) NOT NULL, " +
+                                "`notification_type` VARCHAR(15) NOT NULL, " +
+                                "`notification_message` VARCHAR(200) NOT NULL, " +
+                                "`notification_processed` BOOLEAN NOT NULL DEFAULT '0', " +
+                                "PRIMARY KEY (`notification_id`));");
+                        System.out.println("vSuite > Initialising table: Notifications");
+                    }
+                });
+            }
             System.out.println("vSuite > Database Initialisation Complete");
         }
         catch (Exception ex) {

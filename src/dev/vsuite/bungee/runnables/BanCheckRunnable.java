@@ -1,8 +1,8 @@
-package codes.benh.velocitymc.runnables;
+package dev.vsuite.bungee.runnables;
 
 import java.sql.SQLException;
 
-import codes.benh.velocitymc.Main;
+import dev.vsuite.bungee.Main;
 
 public class BanCheckRunnable implements Runnable {
     @Override

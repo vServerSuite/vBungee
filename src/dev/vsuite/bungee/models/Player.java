@@ -1,4 +1,4 @@
-package codes.benh.velocitymc.models;
+package dev.vsuite.bungee.models;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,10 +8,10 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-import codes.benh.velocitymc.Main;
-import codes.benh.velocitymc.models.punishments.Punishment;
-import codes.benh.velocitymc.models.punishments.PunishmentType;
-import codes.benh.velocitymc.utils.PlayerUtils;
+import dev.vsuite.bungee.Main;
+import dev.vsuite.bungee.models.punishments.Punishment;
+import dev.vsuite.bungee.models.punishments.PunishmentType;
+import dev.vsuite.bungee.utils.PlayerUtils;
 import net.luckperms.api.cacheddata.CachedPermissionData;
 import net.luckperms.api.context.ContextManager;
 import net.md_5.bungee.api.CommandSender;

@@ -1,8 +1,8 @@
-package codes.benh.velocitymc.models.punishments;
+package dev.vsuite.bungee.models.punishments;
 
 import java.sql.SQLException;
 
-import codes.benh.velocitymc.Main;
+import dev.vsuite.bungee.Main;
 
 public class Punishment {
 

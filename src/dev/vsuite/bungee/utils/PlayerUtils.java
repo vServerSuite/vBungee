@@ -1,9 +1,9 @@
-package codes.benh.velocitymc.utils;
+package dev.vsuite.bungee.utils;
 
 import java.sql.SQLException;
 import java.util.UUID;
 
-import codes.benh.velocitymc.Main;
+import dev.vsuite.bungee.Main;
 
 public class PlayerUtils {
 
