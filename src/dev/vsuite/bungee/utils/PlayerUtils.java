@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.UUID;
 
 import dev.vsuite.bungee.Main;
+import io.sentry.Sentry;
 
 public class PlayerUtils {
 
@@ -19,7 +20,9 @@ public class PlayerUtils {
             });
         }
         catch (SQLException e) {
-            e.printStackTrace();
+            if (Main.loggingEnabled()) {
+                Sentry.capture(e);
+            }
         }
 
         return returnValue[0];
@@ -38,7 +41,9 @@ public class PlayerUtils {
             });
         }
         catch (SQLException e) {
-            e.printStackTrace();
+            if (Main.loggingEnabled()) {
+                Sentry.capture(e);
+            }
         }
         if (returnValue[0] != null) {
             return UUID.fromString(returnValue[0]);

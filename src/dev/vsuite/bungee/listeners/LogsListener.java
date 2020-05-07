@@ -29,6 +29,6 @@ public class LogsListener implements Listener {
 
     @EventHandler
     public void onServerSwitch(ServerSwitchEvent ev) {
-        Log.addLog(LogType.SERVER_SWITCH, ev.getPlayer().getUniqueId(), ev.getPlayer().getSocketAddress(), System.currentTimeMillis(), ev.getPlayer().getServer(), "Server switched from '" + ev.getFrom().getName() + "' to '" + ev.getPlayer().getServer().getInfo().getName() + "'");
+        Log.addLog(LogType.SERVER_SWITCH, ev.getPlayer().getUniqueId(), ev.getPlayer().getSocketAddress(), System.currentTimeMillis(), ev.getPlayer().getServer(), "Server switched from " + (ev.getFrom() != null ? ev.getFrom().getName() : "N/A") + " to " + ev.getPlayer().getServer().getInfo().getName());
     }
 }

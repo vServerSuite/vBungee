@@ -113,5 +113,10 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.10</version>
         </dependency>
+        <dependency>
+            <groupId>io.sentry</groupId>
+            <artifactId>sentry</artifactId>
+            <version>1.7.30</version>
+        </dependency>
     </dependencies>
 </project>

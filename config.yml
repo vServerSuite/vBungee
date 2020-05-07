@@ -5,6 +5,10 @@ Database:
   Username: ''
   Password: ''
   Params: '&useSSL=false'
+ErrorLogging:
+  Enabled: false
+  DSN: ''
+  CustomerEmail: ''
 Lobbies:
   - Lobby1
 Discord:

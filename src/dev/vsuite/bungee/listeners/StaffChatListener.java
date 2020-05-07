@@ -19,15 +19,14 @@ public class StaffChatListener extends BaseListener implements Listener {
         if (!e.getMessage().startsWith("/")) {
             if (Main.getInstance().staffChatToggled.contains(player)) {
                 e.setCancelled(true);
-                ProxyServer.getInstance().getPlayers().forEach(proxiedPlayers -> {
-                    if (proxiedPlayers.hasPermission(Permissions.STAFF_CHAT_RECEIVE)) {
-                        String messageToSend = Messages.get(Messages.STAFF_CHAT_FORMAT)
-                                .replaceAll("%server%", player.getProxiedPlayer().getServer().getInfo().getName())
-                                .replaceAll("%player%", player.getProxiedPlayer().getName())
-                                .replaceAll("%message%", e.getMessage());
-                        sendMessage(proxiedPlayers, messageToSend, false);
-                    }
-                });
+                String messageToSend = Messages.get(Messages.STAFF_CHAT_FORMAT)
+                        .replaceAll("%server%", player.getProxiedPlayer().getServer().getInfo().getName())
+                        .replaceAll("%player%", player.getProxiedPlayer().getName())
+                        .replaceAll("%message%", e.getMessage());
+
+                ProxyServer.getInstance().getPlayers().stream()
+                        .filter(proxiedPlayer -> proxiedPlayer.hasPermission(Permissions.STAFF_CHAT_RECEIVE))
+                        .forEach(proxiedPlayer -> sendMessage(proxiedPlayer, messageToSend, true));
             }
         }
     }

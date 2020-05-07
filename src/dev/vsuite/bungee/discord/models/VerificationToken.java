@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.UUID;
 
 import dev.vsuite.bungee.Main;
+import io.sentry.Sentry;
 
 public class VerificationToken {
     private String token;
@@ -26,7 +27,9 @@ public class VerificationToken {
             });
         }
         catch (SQLException e) {
-            e.printStackTrace();
+            if(Main.loggingEnabled()) {
+                Sentry.capture(e);
+            }
         }
         return returnValue[0];
     }
@@ -36,7 +39,9 @@ public class VerificationToken {
             Main.getMySQL().update("DELETE FROM DiscordVerificationTokens WHERE verification_token='" + token + "'");
         }
         catch (SQLException e) {
-            e.printStackTrace();
+            if(Main.loggingEnabled()) {
+                Sentry.capture(e);
+            }
         }
     }
 

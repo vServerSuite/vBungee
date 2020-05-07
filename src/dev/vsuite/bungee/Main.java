@@ -13,12 +13,16 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import com.google.common.io.ByteStreams;
+import dev.vsuite.bungee.api.APIUtils;
 import dev.vsuite.bungee.commands.BungeeStatsCommand;
 import dev.vsuite.bungee.commands.LobbyCommand;
 import dev.vsuite.bungee.commands.ReportCommand;
 import dev.vsuite.bungee.commands.StaffChatCommand;
 import dev.vsuite.bungee.commands.punishments.BanCommand;
 import dev.vsuite.bungee.commands.punishments.MuteCommand;
+import dev.vsuite.bungee.commands.punishments.UnbanCommand;
+import dev.vsuite.bungee.commands.punishments.UnmuteCommand;
 import dev.vsuite.bungee.discord.base.CommandHandler;
 import dev.vsuite.bungee.discord.listeners.VerificationListener;
 import dev.vsuite.bungee.discord.runnables.ActivityRunnable;
@@ -28,17 +32,16 @@ import dev.vsuite.bungee.listeners.LogsListener;
 import dev.vsuite.bungee.listeners.StaffChatListener;
 import dev.vsuite.bungee.listeners.punishments.PlayerBannedListener;
 import dev.vsuite.bungee.listeners.punishments.PlayerMutedListener;
+import dev.vsuite.bungee.models.Player;
 import dev.vsuite.bungee.runnables.BanCheckRunnable;
 import dev.vsuite.bungee.runnables.TpsRunnable;
-import dev.vsuite.bungee.api.APIUtils;
 import dev.vsuite.bungee.utils.Messages;
-import com.google.common.io.ByteStreams;
+import io.sentry.Sentry;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
 import net.md_5.bungee.api.scheduler.TaskScheduler;
@@ -53,8 +56,9 @@ public class Main extends Plugin {
     private static MySQL mySQL;
     private static LuckPerms api;
     private static JDA jda;
-
-    public List<ProxiedPlayer> staffChatToggled = new ArrayList<>();
+    private static Sentry sentry;
+    private final String configFileName = "config.yml";
+    public List<Player> staffChatToggled = new ArrayList<>();
 
     public static Main getInstance() {
         return main;
@@ -72,6 +76,11 @@ public class Main extends Plugin {
         return jda;
     }
 
+    public static boolean loggingEnabled() {
+        return getInstance().getConfig().getBoolean("ErrorLogging.Enabled");
+    }
+
+    @Override
     public void onEnable() {
         main = this;
         api = LuckPermsProvider.get();
@@ -82,8 +91,12 @@ public class Main extends Plugin {
         registerListeners(pluginManager);
         registerSchedulers(getProxy().getScheduler());
 
-        saveDefaultConfig();
+        saveDefaultConfig();co
         Messages.saveDefaultMessages();
+
+        if (loggingEnabled()) {
+            Sentry.init(getConfig().getString("ErrorLogging.DSN"));
+        }
 
         mySQL = new MySQL(
                 getConfig().getString("Database.Host"),
@@ -106,13 +119,20 @@ public class Main extends Plugin {
                 jda.setAutoReconnect(true);
             }
             catch (Exception ex) {
-                ex.printStackTrace();
+                if (loggingEnabled()) {
+                    Sentry.capture(ex);
+                }
             }
         }
 
-        if(getConfig().getBoolean("WebAPI.Enabled")) {
+        if (getConfig().getBoolean("WebAPI.Enabled")) {
             APIUtils.setupAPI();
         }
+    }
+
+    @Override
+    public void onDisable() {
+        jda.shutdown();
     }
 
     private void parseLogDeletion() {
@@ -138,6 +158,8 @@ public class Main extends Plugin {
         pluginManager.registerCommand(this, new MuteCommand());
         pluginManager.registerCommand(this, new ReportCommand());
         pluginManager.registerCommand(this, new StaffChatCommand());
+        pluginManager.registerCommand(this, new UnbanCommand());
+        pluginManager.registerCommand(this, new UnmuteCommand());
     }
 
     private void registerListeners(PluginManager pluginManager) {
@@ -150,7 +172,7 @@ public class Main extends Plugin {
 
     private void registerSchedulers(TaskScheduler taskScheduler) {
         taskScheduler.schedule(this, new TpsRunnable(), 1000, 50, TimeUnit.MILLISECONDS);
-        taskScheduler.schedule(this, new BanCheckRunnable(), 1000, 30000, TimeUnit.MILLISECONDS);
+        taskScheduler.schedule(this, new BanCheckRunnable(), 1000, 5000, TimeUnit.MILLISECONDS);
         if (getConfig().getBoolean("Discord.Enabled")) {
             taskScheduler.schedule(this, new ActivityRunnable(), 1000, 10000, TimeUnit.MILLISECONDS);
         }
@@ -165,10 +187,12 @@ public class Main extends Plugin {
         Configuration config = null;
         try {
             config = ConfigurationProvider.getProvider(YamlConfiguration.class)
-                    .load(new File(Main.getInstance().getDataFolder(), "config.yml"));
+                    .load(new File(Main.getInstance().getDataFolder(), configFileName));
         }
         catch (IOException e) {
-            e.printStackTrace();
+            if (Main.loggingEnabled()) {
+                Sentry.capture(e);
+            }
         }
 
         return config;
@@ -182,17 +206,21 @@ public class Main extends Plugin {
             Main.getInstance().getDataFolder().mkdir();
         }
 
-        File configFile = new File(Main.getInstance().getDataFolder(), "config.yml");
+        File configFile = new File(Main.getInstance().getDataFolder(), configFileName);
         if (!configFile.exists()) {
             try {
-                configFile.createNewFile();
-                try (InputStream is = Main.getInstance().getResourceAsStream("config.yml");
-                     OutputStream os = new FileOutputStream(configFile)) {
-                    ByteStreams.copy(is, os);
+                boolean created = configFile.createNewFile();
+                if (created) {
+                    try (InputStream is = Main.getInstance().getResourceAsStream(configFileName);
+                         OutputStream os = new FileOutputStream(configFile)) {
+                        ByteStreams.copy(is, os);
+                    }
                 }
             }
             catch (IOException e) {
-                throw new RuntimeException("Unable to create configuration file", e);
+                if (Main.loggingEnabled()) {
+                    Sentry.capture(e);
+                }
             }
         }
     }

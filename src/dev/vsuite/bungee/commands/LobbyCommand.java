@@ -5,6 +5,7 @@ import java.util.Random;
 
 import dev.vsuite.bungee.Main;
 import dev.vsuite.bungee.base.BaseCommand;
+import dev.vsuite.bungee.models.Player;
 import dev.vsuite.bungee.utils.Messages;
 import dev.vsuite.bungee.utils.Permissions;
 import net.md_5.bungee.api.CommandSender;
@@ -23,29 +24,26 @@ public class LobbyCommand extends BaseCommand {
         if (!(commandSender instanceof ProxiedPlayer))
             return;
 
-        ProxiedPlayer player = (ProxiedPlayer) commandSender;
+        Player player = Player.get(commandSender);
+
         List<String> lobbies = Main.getInstance().getConfig().getStringList("Lobbies");
 
         if (args.length == 0) {
             Random rand = new Random();
             ServerInfo chosenLobby = ProxyServer.getInstance().getServerInfo(lobbies.get(rand.nextInt(lobbies.size())));
-            player.connect(chosenLobby);
+            player.getProxiedPlayer().connect(chosenLobby);
             String messageToSend = Messages.get(Messages.SERVER_CONNECT)
                     .replaceAll("%server%", chosenLobby.getName());
             sendMessage(player, messageToSend, true);
+            player.sendMessage(messageToSend, true);
+
         }
         else {
-            if (ProxyServer.getInstance().getServerInfo(args[0]) == null) {
-                String messageToSend = Messages.get(Messages.SERVER_NOT_FOUND)
-                        .replaceAll("%server%", args[0]);
-                sendMessage(player, messageToSend, true);
+            ServerInfo server = ProxyServer.getInstance().getServerInfo(args[0]);
+            if (server != null) {
+                player.getProxiedPlayer().connect(server);
             }
-            else {
-                player.connect(Main.getInstance().getProxy().getServerInfo(args[0]));
-                String messageToSend = Messages.get(Messages.SERVER_CONNECT)
-                        .replaceAll("%server%", args[0]);
-                sendMessage(player, messageToSend, true);
-            }
+            player.sendMessage(Messages.get(server == null ? Messages.SERVER_NOT_FOUND : Messages.SERVER_CONNECT).replaceAll("%server%", args[0]), true);
         }
     }
 }

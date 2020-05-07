@@ -32,6 +32,15 @@ Punishments:
     Message: '&7You have been muted by &e%staff%&7 for &e%reason%&7. Your mute expires &e%expiry_date%&7.'
     Usage: 'Invalid Usage. Please type &e/mute <player> [time] <reason>&7.'
     Chat: 'You are currently muted for &e%reason%&7. Your mute will expire on &e%expiry_date%&7. (Mute Id: &e%id%&7)'
+  Unban:
+    Alert: '&e%player%&7 has been unbanned by &e%staff%&7.'
+    NotBanned: '&e%player%&7 is not currently banned on the server.'
+    Usage: 'Invalid Usage. Please type &e/unban <player>&7.'
+  Unmute:
+    Alert: '&e%player%&7 has been unmuted by &e%staff%&7.'
+    NotMuted: '&e%player%&7 is not currently muted on the server.'
+    Usage: 'Invalid Usage. Please type &e/unmute <player>&7.'
+    Notification: 'You have been unmuted'
 Discord:
   Link:
     Notification: 'Someone has requested to verify your account. If this was you, please message vBungee#7026 with the message: &everification %token%&7.'

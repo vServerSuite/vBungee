@@ -3,6 +3,7 @@ package dev.vsuite.bungee.models.punishments;
 import java.sql.SQLException;
 
 import dev.vsuite.bungee.Main;
+import io.sentry.Sentry;
 
 public class Punishment {
 
@@ -31,7 +32,9 @@ public class Punishment {
             return returnValue[0];
         }
         catch (SQLException e) {
-            e.printStackTrace();
+            if(Main.loggingEnabled()) {
+                Sentry.capture(e);
+            }
             return null;
         }
     }

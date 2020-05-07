@@ -3,6 +3,7 @@ package dev.vsuite.bungee.runnables;
 import java.sql.SQLException;
 
 import dev.vsuite.bungee.Main;
+import io.sentry.Sentry;
 
 public class BanCheckRunnable implements Runnable {
     @Override
@@ -14,7 +15,9 @@ public class BanCheckRunnable implements Runnable {
             }
         }
         catch (SQLException e) {
-            e.printStackTrace();
+            if(Main.loggingEnabled()) {
+                Sentry.capture(e);
+            }
         }
     }
 }

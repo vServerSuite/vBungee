@@ -3,15 +3,14 @@ package dev.vsuite.bungee.utils;
 import java.awt.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 import dev.vsuite.bungee.Main;
 import dev.vsuite.bungee.models.Player;
 import dev.vsuite.bungee.models.punishments.PunishmentType;
+import io.sentry.Sentry;
 import jdk.internal.jline.internal.Nullable;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
@@ -29,7 +28,9 @@ public class DiscordUtils {
                 return token;
             }
             catch (SQLException e) {
-                e.printStackTrace();
+                if(Main.loggingEnabled()) {
+                    Sentry.capture(e);
+                }
                 return null;
             }
         }
@@ -82,7 +83,7 @@ public class DiscordUtils {
 
         builder.setColor(proofLink != null ? Color.GREEN : Color.RED);
         builder.setAuthor("vBungee", "https://vsuite.dev", getLogsChannel().getGuild().getIconUrl());
-        builder.setThumbnail("https://visage.surgeplay.com/bust/" + player.getUUID().toString().replaceAll("-", "") + ".png");
+        builder.setThumbnail("https://visage.surgeplay.com/bust/" + player.getUuid().toString().replaceAll("-", "") + ".png");
 
         if (proofLink != null) {
             builder.setDescription("Proof Link: " + proofLink);
@@ -94,7 +95,7 @@ public class DiscordUtils {
         builder.addField("Punishment Type", type.toString(), true);
         builder.addField("Punished User", user, true);
         builder.addField("Punishment Reason", reason, true);
-        builder.addField("Expiry Date", expiry == -1 ? "Never" : new SimpleDateFormat("dd-MM-yyyy '@' HH:mm").format(new Date(expiry)), true);
+        builder.addField("Expiry Date", expiry == -1 ? "Never" : DateUtil.format(expiry), true);
 
         return builder;
     }
@@ -108,7 +109,9 @@ public class DiscordUtils {
             Main.getMySQL().update("UPDATE Punishments SET punishment_discord_message_id='" + messageId + "' WHERE punishment_id='" + id + "'");
         }
         catch (SQLException e) {
-            e.printStackTrace();
+            if(Main.loggingEnabled()) {
+                Sentry.capture(e);
+            }
         }
     }
 
@@ -136,7 +139,9 @@ public class DiscordUtils {
             return returnValue;
         }
         catch (SQLException e) {
-            e.printStackTrace();
+            if(Main.loggingEnabled()) {
+                Sentry.capture(e);
+            }
             return null;
         }
     }

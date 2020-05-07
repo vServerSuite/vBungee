@@ -23,7 +23,7 @@ public class JoinListener extends BaseListener implements Listener {
         }
 
         Date date = new Date(player.getFirstLogin());
-        sendMessage(player, "You first logged in on &e" +
+        player.sendMessage("You first logged in on &e" +
                 new SimpleDateFormat("EEEE, d").format(date) +
                 getDayOfMonthSuffix(date.getDate()) +
                 new SimpleDateFormat(" MMMM, yyyy").format(date) + "&7 at &e" +

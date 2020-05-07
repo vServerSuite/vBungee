@@ -1,6 +1,8 @@
 package dev.vsuite.bungee.utils;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,7 +17,7 @@ public class DateUtil {
         return timePattern.matcher(input).replaceFirst("").trim();
     }
 
-    public static long parseDateDiff(String time, boolean future) throws Exception {
+    public static long parseDateDiff(String time, boolean future) {
         Matcher m = timePattern.matcher(time);
         int years = 0;
         int months = 0;
@@ -61,7 +63,7 @@ public class DateUtil {
             }
         }
         if (!found) {
-            throw new Exception("illegalDate");
+            return -1;
         }
         Calendar c = new GregorianCalendar();
         if (years > 0) {
@@ -141,5 +143,9 @@ public class DateUtil {
             return "now";
         }
         return sb.toString().trim();
+    }
+
+    public static String format(long datetime) {
+        return new SimpleDateFormat("dd-MM-yyyy '@' HH:mm:ss").format(new Date(datetime));
     }
 }

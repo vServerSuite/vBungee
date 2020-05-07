@@ -1,8 +1,6 @@
 package dev.vsuite.bungee.api;
 
-import java.text.SimpleDateFormat;
 import java.util.Base64;
-import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -11,6 +9,7 @@ import dev.vsuite.bungee.api.responses.PunishmentApiResponse;
 import dev.vsuite.bungee.api.responses.base.BaseApiResponse;
 import dev.vsuite.bungee.models.Player;
 import dev.vsuite.bungee.models.punishments.PunishmentType;
+import dev.vsuite.bungee.utils.DateUtil;
 import dev.vsuite.bungee.utils.DiscordUtils;
 import dev.vsuite.bungee.utils.Messages;
 import dev.vsuite.bungee.utils.Permissions;
@@ -25,9 +24,12 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import org.apache.commons.lang3.RandomStringUtils;
 
 public class APIUtils {
+    /**
+     * Sets up the API and enables all of the settings that need to be enabled
+     */
     public static void setupAPI() {
         if (Main.getInstance().getConfig().getString("WebAPI.Secret").equals("")) {
-            Main.getInstance().getConfig().set("WebAPI.Secret", Base64.getEncoder().encodeToString(RandomStringUtils.random(100).getBytes()));
+            Main.getInstance().getConfig().set("WebAPI.Secret", Base64.getEncoder().encodeToString(RandomStringUtils.random(100, true, true).getBytes()));
         }
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         Thread.currentThread().setContextClassLoader(Main.class.getClassLoader());
@@ -38,6 +40,12 @@ public class APIUtils {
         setupPlayerStatusEndpoint(app);
     }
 
+    /**
+     * Runs a check to see whether the API secret is correct
+     *
+     * @param context - The context of the API request that was carried out
+     * @return - Whether the request contained the access header or not
+     */
     private static boolean accessHeadersMatch(Context context) {
         boolean returnValue = false;
         if (!Objects.equals(context.header("Authorization"), "Basic " + Main.getInstance().getConfig().getString("WebAPI.Secret"))) {
@@ -50,20 +58,23 @@ public class APIUtils {
         return returnValue;
     }
 
+    /**
+     * Sets up the ban endpoint for usage on the web panel
+     *
+     * @param app - The Javalin instance to be passed in to tie the post request to the same url
+     */
     private static void setupBanPlayerEndpoint(Javalin app) {
         app.post("/ban/:uuid", context -> {
             if (accessHeadersMatch(context)) {
                 String banReason = context.formParam("reason");
                 String staffMember = context.formParam("staff");
-                long expiryDate = -1;
-                if (!Objects.equals(context.formParam("expiry_date"), "-1")) {
-                    expiryDate = Long.parseLong(Objects.requireNonNull(context.formParam("expiry_date")));
-                }
+                String expiryDate = context.formParam("expiry_date");
                 UUID uuid = UUID.fromString(context.pathParam("uuid"));
                 Player player = Player.get(uuid);
+                long parsedExpiryDate = Long.parseLong(Objects.requireNonNull(expiryDate));
+
                 if (player.exists()) {
                     ProxiedPlayer proxiedPlayer = ProxyServer.getInstance().getPlayer(uuid);
-                    long finalExpiryDate = expiryDate;
                     context.json(player.hasPermission(Permissions.BAN_EXEMPT)
                             .thenApplyAsync(result -> {
                                 if (result) {
@@ -74,23 +85,22 @@ public class APIUtils {
                                         String banMessage = Messages.get(Messages.BAN)
                                                 .replaceAll("%reason%", banReason)
                                                 .replaceAll("%staff%", staffMember)
-                                                .replaceAll("%expiry_date%", finalExpiryDate == -1 ? "never" : new SimpleDateFormat("dd-MM-yyyy '&7@&e' HH:mm:ss").format(new Date(finalExpiryDate)));
+                                                .replaceAll("%expiry_date%", parsedExpiryDate == -1 ? "never" : DateUtil.format(parsedExpiryDate));
                                         proxiedPlayer.disconnect(new TextComponent(ChatColor.translateAlternateColorCodes('&', banMessage)));
                                     }
+                                    String newBanId = player.punish(PunishmentType.BAN, staffMember, banReason, expiryDate);
 
-                                    String newBanId = player.logPunishment(PunishmentType.BAN, staffMember, banReason, finalExpiryDate);
-                                    DiscordUtils.logPunishment(PunishmentType.BAN, newBanId, player, staffMember, banReason, finalExpiryDate);
+                                    DiscordUtils.logPunishment(PunishmentType.BAN, newBanId, player, staffMember, banReason, parsedExpiryDate);
                                     String banAlert = Messages.get(Messages.BAN_ALERT)
                                             .replaceAll("%staff%", staffMember)
                                             .replaceAll("%player%", player.getUsername())
                                             .replaceAll("%reason%", banReason)
-                                            .replaceAll("%expiry_date%", finalExpiryDate == -1 ? "never" : new SimpleDateFormat("dd-MM-yyyy '&7@&e' HH:mm:ss").format(new Date(finalExpiryDate)));
+                                            .replaceAll("%expiry_date%", parsedExpiryDate == -1 ? "never" : DateUtil.format(parsedExpiryDate));
                                     BaseComponent[] message = TextComponent.fromLegacyText(ChatColor.translateAlternateColorCodes('&', Messages.get(Messages.PREFIX) + banAlert));
-                                    ProxyServer.getInstance().getPlayers().forEach(p -> {
-                                        if (p.hasPermission(Permissions.BAN_RECEIVE)) {
-                                            p.sendMessage(message);
-                                        }
-                                    });
+                                    ProxyServer.getInstance().getPlayers().stream()
+                                            .filter(p -> p.hasPermission(Permissions.BAN_RECEIVE))
+                                            .forEach(p -> p.sendMessage(message));
+
                                     return new PunishmentApiResponse(200, "Player has been banned", true, PunishmentType.BAN, null);
                                 }
                             }));
@@ -99,6 +109,11 @@ public class APIUtils {
         });
     }
 
+    /**
+     * Sets up the player status endpoint for usage on the web panel
+     *
+     * @param app - The Javalin instance to be passed in to tie the get request to the same url
+     */
     private static void setupPlayerStatusEndpoint(Javalin app) {
         app.get("/playerstatus/:username", ctx -> {
             if (accessHeadersMatch(ctx)) {

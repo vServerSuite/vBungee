@@ -1,6 +1,7 @@
 package dev.vsuite.bungee.helpers;
 
 import dev.vsuite.bungee.Main;
+import io.sentry.Sentry;
 import pro.husk.mysql.MySQL;
 
 public class DbHelper {
@@ -50,7 +51,7 @@ public class DbHelper {
                     System.out.println("vSuite > Initialising table: Discord Verification Tokens");
                 }
             });
-            if(Main.getInstance().getConfig().getBoolean("WebAPI.Enabled")) {
+            if (Main.getInstance().getConfig().getBoolean("WebAPI.Enabled")) {
                 sql.query("SHOW TABLES LIKE 'Notifications'", resultSet -> {
                     if (resultSet == null || !resultSet.next()) {
                         sql.update("CREATE TABLE `Notifications` (" +
@@ -80,7 +81,9 @@ public class DbHelper {
             System.out.println("vSuite > Database Initialisation Complete");
         }
         catch (Exception ex) {
-            ex.printStackTrace();
+            if(Main.loggingEnabled()) {
+                Sentry.capture(ex);
+            }
         }
     }
 

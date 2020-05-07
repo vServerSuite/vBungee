@@ -1,45 +1,15 @@
-package dev.vsuite.bungee.base;
+package dev.vsuite.bungee.base.models;
 
 import dev.vsuite.bungee.models.Player;
 import dev.vsuite.bungee.utils.Messages;
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.plugin.Command;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import static com.google.common.base.Preconditions.checkArgument;
 
-public abstract class BaseCommand extends Command {
-    /**
-     * Creates a command without any permissions or aliases
-     *
-     * @param name - The command
-     */
-    public BaseCommand(String name) {
-        super(name);
-    }
-
-    /**
-     * Creates a command without any aliases
-     *
-     * @param name       - The command
-     * @param permission - The permission
-     */
-    public BaseCommand(String name, String permission) {
-        super(name, permission);
-    }
-
-    /**
-     * Creates a command
-     *
-     * @param name       - The command
-     * @param permission - The permission
-     * @param aliases    - The aliases for this command
-     */
-    public BaseCommand(String name, String permission, String... aliases) {
-        super(name, permission, aliases);
-    }
+public abstract class BaseObject {
 
     /**
      * Sends a message to a user in-game (with formatting)
@@ -60,19 +30,9 @@ public abstract class BaseCommand extends Command {
      * @param message    - The message to send
      * @param prefixUsed - Whether the prefix should be displayed before the message
      */
-    protected void sendMessage(CommandSender player, String message, boolean prefixUsed) {
+    protected void sendMessage(ProxiedPlayer player, String message, boolean prefixUsed) {
         BaseComponent[] component = TextComponent.fromLegacyText(prefixUsed ? getPrefix() + translateColorCodes(message) : translateColorCodes(message));
         player.sendMessage(component);
-    }
-
-    /**
-     * Sends a message to a user in-game (with formatting)
-     *
-     * @param player  - The command sender to send the message to
-     * @param message - The message to send
-     */
-    protected void sendMessage(CommandSender player, TextComponent message) {
-        player.sendMessage(message);
     }
 
     /**

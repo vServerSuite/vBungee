@@ -3,11 +3,11 @@ package dev.vsuite.bungee.commands;
 import java.util.ArrayList;
 
 import dev.vsuite.bungee.base.BaseCommand;
+import dev.vsuite.bungee.models.Player;
 import dev.vsuite.bungee.utils.Messages;
 import dev.vsuite.bungee.utils.Permissions;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -26,38 +26,34 @@ public class ReportCommand extends BaseCommand implements TabExecutor {
         if (!(commandSender instanceof ProxiedPlayer))
             return;
 
-        ProxiedPlayer player = (ProxiedPlayer) commandSender;
+        Player player = Player.get(commandSender);
 
         if (args.length < 2) {
-            sendMessage(player, Messages.get(Messages.REPORT_INVALID_USAGE), true);
+            player.sendMessage(Messages.get(Messages.REPORT_INVALID_USAGE), true);
         }
         else {
-            if (ProxyServer.getInstance().getPlayer(args[0]) == null) {
-                sendMessage(player, Messages.get(Messages.PLAYER_NOT_FOUND).replaceAll("%player%", args[0]), true);
+            Player target = Player.get(args[0]);
+            if (target == null || !target.exists() || target.getProxiedPlayer() == null) {
+                player.sendMessage(Messages.get(Messages.PLAYER_NOT_FOUND).replaceAll("%player%", args[0]), true);
             }
             else {
-                ProxiedPlayer target = ProxyServer.getInstance().getPlayer(args[0]);
+                args[0] = "";
+                String reportMessage = translateColorCodes(Messages.get(Messages.REPORT_FORMAT)
+                        .replaceAll("%prefix%", getPrefix())
+                        .replaceAll("%reporter%", player.getUsername())
+                        .replaceAll("%reported%", target.getUsername())
+                        .replaceAll("%reason%", String.join(" &e", args).trim()));
 
-                ProxyServer.getInstance().getPlayers().forEach(proxiedPlayer -> {
-                    if (proxiedPlayer.hasPermission(Permissions.REPORT_RECEIVE)) {
-                        args[0] = "";
-                        String reportMessage = translateColorCodes(Messages.get(Messages.REPORT_FORMAT)
-                                .replaceAll("%prefix%", getPrefix())
-                                .replaceAll("%reporter%", player.getName())
-                                .replaceAll("%reported%", target.getName())
-                                .replaceAll("%reason%", String.join(" &e", args).trim()));
+                TextComponent textComponent = new TextComponent(TextComponent.fromLegacyText(reportMessage));
+                textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(
+                        translateColorCodes(Messages.get(Messages.REPORT_FORMAT_HOVER)
+                                .replaceAll("%server%", target.getProxiedPlayer().getServer().getInfo().getName()))
+                ).create()));
+                textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/server " + target.getProxiedPlayer().getServer().getInfo().getName()));
 
-                        BaseComponent[] component = TextComponent.fromLegacyText(reportMessage);
-                        TextComponent textComponent = new TextComponent(component);
-                        textComponent.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(
-                                translateColorCodes(Messages.get(Messages.REPORT_FORMAT_HOVER)
-                                        .replaceAll("%server%", target.getServer().getInfo().getName()))
-                        ).create()));
-                        textComponent.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/server " + target.getServer().getInfo().getName()));
-
-                        sendMessage(proxiedPlayer, textComponent);
-                    }
-                });
+                ProxyServer.getInstance().getPlayers().stream()
+                        .filter(proxiedPlayer -> proxiedPlayer.hasPermission(Permissions.REPORT_RECEIVE))
+                        .forEach(proxiedPlayer -> sendMessage(proxiedPlayer, textComponent));
                 sendMessage(player, Messages.get(Messages.REPORT_CONFIRMATION), true);
             }
         }

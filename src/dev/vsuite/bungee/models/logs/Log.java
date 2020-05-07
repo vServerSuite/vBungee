@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.UUID;
 
 import dev.vsuite.bungee.Main;
+import io.sentry.Sentry;
 import net.md_5.bungee.api.connection.Server;
 
 public class Log {
@@ -26,7 +27,9 @@ public class Log {
                             "VALUES ('" + type.toString() + "', '" + player + "', '" + fixIPString(address) + "', '" + dateTime + "', '" + serverName + "','" + message + "')");
         }
         catch (SQLException e) {
-            e.printStackTrace();
+            if(Main.loggingEnabled()) {
+                Sentry.capture(e);
+            }
         }
     }
 
