@@ -20,6 +20,7 @@ import dev.vsuite.bungee.commands.LobbyCommand;
 import dev.vsuite.bungee.commands.ReportCommand;
 import dev.vsuite.bungee.commands.StaffChatCommand;
 import dev.vsuite.bungee.commands.punishments.BanCommand;
+import dev.vsuite.bungee.commands.punishments.KickCommand;
 import dev.vsuite.bungee.commands.punishments.MuteCommand;
 import dev.vsuite.bungee.commands.punishments.UnbanCommand;
 import dev.vsuite.bungee.commands.punishments.UnmuteCommand;
@@ -56,7 +57,6 @@ public class Main extends Plugin {
     private static MySQL mySQL;
     private static LuckPerms api;
     private static JDA jda;
-    private static Sentry sentry;
     private final String configFileName = "config.yml";
     public List<Player> staffChatToggled = new ArrayList<>();
 
@@ -91,7 +91,7 @@ public class Main extends Plugin {
         registerListeners(pluginManager);
         registerSchedulers(getProxy().getScheduler());
 
-        saveDefaultConfig();co
+        saveDefaultConfig();
         Messages.saveDefaultMessages();
 
         if (loggingEnabled()) {
@@ -154,6 +154,7 @@ public class Main extends Plugin {
     private void registerCommands(PluginManager pluginManager) {
         pluginManager.registerCommand(this, new BanCommand());
         pluginManager.registerCommand(this, new BungeeStatsCommand());
+        pluginManager.registerCommand(this, new KickCommand());
         pluginManager.registerCommand(this, new LobbyCommand());
         pluginManager.registerCommand(this, new MuteCommand());
         pluginManager.registerCommand(this, new ReportCommand());

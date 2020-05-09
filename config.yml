@@ -1,3 +1,4 @@
+Lang: 'en'
 Database:
   Host: ''
   Port: '3306'

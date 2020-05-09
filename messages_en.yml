@@ -41,6 +41,11 @@ Punishments:
     NotMuted: '&e%player%&7 is not currently muted on the server.'
     Usage: 'Invalid Usage. Please type &e/unmute <player>&7.'
     Notification: 'You have been unmuted'
+  Kick:
+    Alert: '&e%player%&7 has been kicked by &e%staff%&7 for &e%reason%&7.'
+    Exempt: '&e%player%&7 is exempt from being kicked.'
+    Message: '&7You have been kicked by &e%staff%&7 for &e%reason%&7.'
+    Usage: 'Invalid Usage. Please type &e/kick <player> <reason>&7.'
 Discord:
   Link:
     Notification: 'Someone has requested to verify your account. If this was you, please message vBungee#7026 with the message: &everification %token%&7.'
