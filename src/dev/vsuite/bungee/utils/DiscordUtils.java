@@ -28,7 +28,7 @@ public class DiscordUtils {
                 return token;
             }
             catch (SQLException e) {
-                if(Main.loggingEnabled()) {
+                if (Main.loggingEnabled()) {
                     Sentry.capture(e);
                 }
                 return null;
@@ -40,68 +40,98 @@ public class DiscordUtils {
     }
 
     public static void logPunishment(PunishmentType type, String punishmentId, Player player, Object staff, String reason, long expiry) {
-        if (Main.getJda() != null) {
-            String staffMember = "";
-            if (staff instanceof Player) {
-                staffMember = ((Player) staff).getUsername().replaceAll("_", "\\_");
-                if (((Player) staff).getDiscordId() != null) {
-                    User u = Main.getJda().getUserById(((Player) staff).getDiscordId());
-                    if (u != null) {
-                        staffMember = u.getAsMention();
+        try {
+            if (Main.getJda() != null) {
+                String staffMember = "";
+                if (staff instanceof Player) {
+                    staffMember = ((Player) staff).getUsername().replaceAll("_", "\\_");
+                    if (((Player) staff).getDiscordId() != null) {
+                        User u = Main.getJda().getUserById(((Player) staff).getDiscordId());
+                        if (u != null) {
+                            staffMember = u.getAsMention();
+                        }
                     }
                 }
-            }
-            else if (staff instanceof CommandSender) {
-                staffMember = ((CommandSender) staff).getName().replaceAll("_", "\\_");
-            }
+                else if (staff instanceof CommandSender) {
+                    staffMember = ((CommandSender) staff).getName().replaceAll("_", "\\_");
+                }
 
-            String finalStaffMember = staffMember;
-            getLogsChannel().sendMessage(generateEmbed(type, punishmentId, player, staffMember, reason, expiry, null).build()).queue(message -> {
-                updateDiscordPunishmentId(type, punishmentId, message.getId());
-            });
+                String finalStaffMember = staffMember;
+                getLogsChannel().sendMessage(generateEmbed(type, punishmentId, player, staffMember, reason, expiry, null).build()).queue(message -> {
+                    updateDiscordPunishmentId(type, punishmentId, message.getId());
+                });
+            }
+        }
+        catch (Exception ex) {
+            if (Main.loggingEnabled()) {
+                Sentry.capture(ex);
+            }
         }
     }
 
     public static void logPunishment(PunishmentType type, String punishmentId, Player player, String staffMember, String reason, long expiry) {
-        if (Main.getJda() != null) {
-            getLogsChannel().sendMessage(generateEmbed(type, punishmentId, player, staffMember, reason, expiry, null).build()).queue(message -> {
-                updateDiscordPunishmentId(type, punishmentId, message.getId());
-            });
+        try {
+            if (Main.getJda() != null) {
+                Objects.requireNonNull(getLogsChannel()).sendMessage(generateEmbed(type, punishmentId, player, staffMember, reason, expiry, null).build()).queue(message -> {
+                    updateDiscordPunishmentId(type, punishmentId, message.getId());
+                });
+            }
+        }
+        catch (Exception ex) {
+            if (Main.loggingEnabled()) {
+                Sentry.capture(ex);
+            }
         }
     }
 
     private static EmbedBuilder generateEmbed(PunishmentType type, String punishmentId, Player player, String staff, String reason, long expiry, @Nullable String proofLink) {
-        EmbedBuilder builder = new EmbedBuilder();
+        try {
+            EmbedBuilder builder = new EmbedBuilder();
 
-        String user = player.getUsername().replaceAll("_", "\\_");
-        if (player.getDiscordId() != null) {
-            User u = Main.getJda().getUserById(player.getDiscordId());
-            if (u != null) {
-                user = u.getAsMention();
+            String user = player.getUsername().replaceAll("_", "\\_");
+            if (player.getDiscordId() != null) {
+                User u = Main.getJda().getUserById(player.getDiscordId());
+                if (u != null) {
+                    user = u.getAsMention();
+                }
             }
+
+            builder.setColor(proofLink != null ? Color.GREEN : Color.RED);
+            builder.setAuthor("vBungee", "https://vsuite.dev", getLogsChannel().getGuild().getIconUrl());
+            builder.setThumbnail("https://visage.surgeplay.com/bust/" + player.getUuid().toString().replaceAll("-", "") + ".png");
+
+            if (proofLink != null) {
+                builder.setDescription("Proof Link: " + proofLink);
+            }
+            else {
+                builder.setDescription("**" + staff + "** - Please use `" + Main.getInstance().getConfig().getString("Discord.Prefix") + "addproof " + punishmentId + "` to add a link to the proof for the punishment");
+            }
+
+            builder.addField("Punishment Type", type.toString(), true);
+            builder.addField("Punished User", user, true);
+            builder.addField("Punishment Reason", reason, true);
+            builder.addField("Expiry Date", expiry == -1 ? "Never" : DateUtil.format(expiry), true);
+
+            return builder;
         }
-
-        builder.setColor(proofLink != null ? Color.GREEN : Color.RED);
-        builder.setAuthor("vBungee", "https://vsuite.dev", getLogsChannel().getGuild().getIconUrl());
-        builder.setThumbnail("https://visage.surgeplay.com/bust/" + player.getUuid().toString().replaceAll("-", "") + ".png");
-
-        if (proofLink != null) {
-            builder.setDescription("Proof Link: " + proofLink);
+        catch (Exception ex) {
+            if (Main.loggingEnabled()) {
+                Sentry.capture(ex);
+            }
+            return null;
         }
-        else {
-            builder.setDescription("**" + staff + "** - Please use `" + Main.getInstance().getConfig().getString("Discord.Prefix") + "addproof " + punishmentId + "` to add a link to the proof for the punishment");
-        }
-
-        builder.addField("Punishment Type", type.toString(), true);
-        builder.addField("Punished User", user, true);
-        builder.addField("Punishment Reason", reason, true);
-        builder.addField("Expiry Date", expiry == -1 ? "Never" : DateUtil.format(expiry), true);
-
-        return builder;
     }
 
     private static TextChannel getLogsChannel() {
-        return Main.getJda().getTextChannelById(Main.getInstance().getConfig().getString("Discord.Ids.Punishments"));
+        try {
+            return Main.getJda().getTextChannelById(Main.getInstance().getConfig().getString("Discord.Ids.Punishments"));
+        }
+        catch (Exception ex) {
+            if (Main.loggingEnabled()) {
+                Sentry.capture(ex);
+            }
+            return null;
+        }
     }
 
     private static void updateDiscordPunishmentId(PunishmentType type, String id, String messageId) {
@@ -109,7 +139,7 @@ public class DiscordUtils {
             Main.getMySQL().update("UPDATE Punishments SET punishment_discord_message_id='" + messageId + "' WHERE punishment_id='" + id + "'");
         }
         catch (SQLException e) {
-            if(Main.loggingEnabled()) {
+            if (Main.loggingEnabled()) {
                 Sentry.capture(e);
             }
         }
@@ -139,7 +169,7 @@ public class DiscordUtils {
             return returnValue;
         }
         catch (SQLException e) {
-            if(Main.loggingEnabled()) {
+            if (Main.loggingEnabled()) {
                 Sentry.capture(e);
             }
             return null;
