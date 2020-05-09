@@ -25,6 +25,11 @@ public class Permissions {
     public static final String UNMUTE = PREFIX + "unmute";
     public static final String UNMUTE_RECEIVE = UNMUTE + ".receive";
 
+    public static final String KICK = PREFIX + "kick";
+    public static final String KICK_EXEMPT = KICK + ".exempt";
+    public static final String KICK_RECEIVE = KICK + ".receive";
+
+
     public static final String BUNGEE_STATS = PREFIX + "stats";
 
     public static final String LOBBY = PREFIX + "lobby";
